@@ -1,0 +1,14 @@
+[
+    {
+        "grantDate": "2022-10-01",
+        "purchaseDate": "2023-03-31",
+        "shares": 96.53,
+        "purchasePrice": 70.65
+    },
+    {
+        "grantDate": "2024-10-01",
+        "purchaseDate": "2025-03-31",
+        "shares": 149.85,
+        "purchasePrice": 53.96
+    }
+]
