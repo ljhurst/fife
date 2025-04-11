@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatDateYYYYMMDD } from '../../utils/date.ts';
-import { loadESPPPurchasesTaxes } from '../../utils/espp-calculations.ts';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { formatDateYYYYMMDD } from '@/utils/date.ts';
+import { loadESPPPurchasesTaxes } from '@/utils/espp-calculations.ts';
 
 const purchases = loadESPPPurchasesTaxes();
 ---

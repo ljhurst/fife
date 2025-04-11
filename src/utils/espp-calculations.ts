@@ -1,6 +1,6 @@
-import esppPurchases from '../pages/work/espp-purchases.json';
-import { addYears, latestDate } from '../utils/date';
-import { round } from '../utils/number';
+import esppPurchases from '@/data/espp/purchases.json';
+import { addYears, latestDate } from '@/utils/date';
+import { round } from '@/utils/number';
 
 const ESPP_DISCOUNT = 0.15;
 
@@ -24,7 +24,8 @@ function loadESPPPurchasesTaxes(): ESPPPurchaseTaxes[] {
     return esppPurchases.map(_createESPPPurchaseTaxes);
 }
 
-export { loadESPPPurchasesTaxes, ESPPPurchaseTaxes };
+export { loadESPPPurchasesTaxes };
+export type { ESPPPurchaseTaxes };
 
 function _loadESPPPurchases(): ESPPPurchase[] {
     return esppPurchases.map((purchase) => ({
@@ -72,8 +73,8 @@ function _calcLongTermGainsDate(purchaseDate: Date): Date {
     return addYears(purchaseDate, 1);
 }
 
-function _calcQualifyingDispositionDate(purchaseDate: Date): Date {
-    const twoYearsAfterGrantDate = addYears(purchaseDate, 2);
+function _calcQualifyingDispositionDate(grantDate: Date, purchaseDate: Date): Date {
+    const twoYearsAfterGrantDate = addYears(grantDate, 2);
     const oneYearAfterPurchaseDate = addYears(purchaseDate, 1);
 
     return latestDate(twoYearsAfterGrantDate, oneYearAfterPurchaseDate);
