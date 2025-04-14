@@ -1,9 +1,5 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { formatDateYYYYMMDD } from '@/utils/date.ts';
-import { loadESPPPurchasesTaxes } from '@/utils/espp-calculations.ts';
-
-const purchases = loadESPPPurchasesTaxes();
 ---
 
 <BaseLayout>
@@ -12,36 +8,86 @@ const purchases = loadESPPPurchasesTaxes();
             <h1 class="title is-1">ESPP</h1>
             <h2 class="title is-2">Tax Considerations</h2>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Grant Date</th>
-                        <th>Purchase Date</th>
-                        <th>Shares</th>
-                        <th>Purchase Price</th>
-                        <th>Purchase Market Price</th>
-                        <th>Discount Amount</th>
-                        <th>Long Term Gains Date</th>
-                        <th>Qualifying Disposition Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        purchases.map((purchase) => (
+            <div x-data="purchaseTableXData()">
+                <div class="field">
+                    <label class="label">NKE Market Price</label>
+                    <div class="control">
+                        <input
+                            class="input"
+                            type="text"
+                            placeholder="Enter NKE Market Price"
+                            x-model="data.nkeMarketPrice"
+                            @input="methods.onMarketPriceInput"
+                        />
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Grant Date</th>
+                            <th>Purchase Date</th>
+                            <th>Offer Start Price</th>
+                            <th>Offer End Price</th>
+                            <th>Purchase Price</th>
+                            <th>Shares</th>
+                            <th>Discount Amount</th>
+                            <th>Current Gain/Loss</th>
+                            <th>Disqualifying Disposition w/ STCG Taxes</th>
+                            <th>Disqualifying Disposition w/ LTCG Taxes</th>
+                            <th>Qualifying Disposition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template
+                            x-for="purchase in data.purchases"
+                            :key="purchase.grantDate.toString()"
+                        >
                             <tr>
-                                <td>{formatDateYYYYMMDD(purchase.grantDate)}</td>
-                                <td>{formatDateYYYYMMDD(purchase.purchaseDate)}</td>
-                                <td class="has-text-right">{purchase.shares}</td>
-                                <td class="has-text-right">${purchase.purchasePrice}</td>
-                                <td class="has-text-right">${purchase.purchaseMarketPrice}</td>
-                                <td class="has-text-right">${purchase.discountAmount}</td>
-                                <td>{formatDateYYYYMMDD(purchase.longTermGainsDate)}</td>
-                                <td>{formatDateYYYYMMDD(purchase.qualifyingDispositionDate)}</td>
+                                <td x-text="methods.formatDateYYYYMMDD(purchase.grantDate)"></td>
+                                <td x-text="methods.formatDateYYYYMMDD(purchase.purchaseDate)"></td>
+                                <td
+                                    class="has-text-right"
+                                    x-text="methods.formatUSD(purchase.offerStartPrice)"></td>
+                                <td
+                                    class="has-text-right"
+                                    x-text="methods.formatUSD(purchase.offerEndPrice)"></td>
+                                <td
+                                    class="has-text-right"
+                                    x-text="methods.formatUSD(purchase.purchasePrice)"></td>
+                                <td class="has-text-right" x-text="purchase.shares"></td>
+                                <td
+                                    class="has-text-right"
+                                    x-text="methods.formatUSD(purchase.discountAmount)"></td>
+                                <td class="has-text-right" x-text="methods.formatUSD(purchase.gain)"
+                                ></td>
+                                <td
+                                    class="has-text-right"
+                                    x-text="
+                                        methods.formatUSD(
+                                            purchase.disqualifyingDispositionSTCGTaxes
+                                        )
+                                    "
+                                ></td>
+                                <td
+                                    class="has-text-right"
+                                    x-text="
+                                        methods.formatUSD(
+                                            purchase.disqualifyingDispositionLTGCTaxes
+                                        )
+                                    "
+                                ></td>
+                                <td
+                                    class="has-text-right"
+                                    x-text="methods.formatUSD(purchase.qualifyingDispositionTaxes)"
+                                ></td>
                             </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
         </div>
+
+        <script src="./espp.client.js"></script>
     </section>
 </BaseLayout>
