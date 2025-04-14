@@ -14,6 +14,31 @@ import Navigation from '@/components/organisms/Navigation.astro';
     </head>
     <body>
         <Navigation />
+
         <slot />
+
+        <footer class="footer">
+            <div class="level">
+                <div class="level-item has-text-centered">
+                    <p>
+                        Made with
+                        <span class="icon has-text-danger">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                        by lessthanthree.
+                    </p>
+                </div>
+                <div class="level-item has-text-centered">
+                    <p>
+                        See the source
+                        <a href="https://github.com/ljhurst/fife">
+                            <span class="icon has-text-text">
+                                <i class="fa-brands fa-github"></i>
+                            </span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </footer>
     </body>
 </html>
