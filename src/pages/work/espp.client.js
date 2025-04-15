@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
 
+import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
 import { formatDateYYYYMMDD } from '@/utils/date.ts';
 import { loadESPPPurchasesTaxes, updateMarketDependentValues } from '@/utils/espp-calculations.ts';
 import { formatUSD } from '@/utils/number.ts';
@@ -9,6 +10,11 @@ function purchaseTableXData() {
         data: {
             nkeMarketPrice: '',
             purchases: loadESPPPurchasesTaxes(),
+            outcomeClasses: {
+                [ESPPTaxOutcome.GOOD]: 'has-background-danger-dark',
+                [ESPPTaxOutcome.BETTER]: 'has-background-warning-dark',
+                [ESPPTaxOutcome.BEST]: 'has-background-success-dark',
+            },
         },
         methods: {
             formatUSD,
