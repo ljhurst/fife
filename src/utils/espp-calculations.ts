@@ -48,7 +48,10 @@ function updateMarketDependentValues(purchases: ESPPPurchaseTaxes[], marketPrice
             purchase,
             marketPrice,
         );
-        const disqualifyingDispositionLTCG = _createDisqualifyingDispositionLTCG(purchase);
+        const disqualifyingDispositionLTCG = _createDisqualifyingDispositionLTCG(
+            purchase,
+            marketPrice,
+        );
         const qualifyingDisposition = _createQualifyingDisposition(purchase, marketPrice);
 
         const dispositions = {
@@ -139,11 +142,17 @@ function _calculateDisqualifyingDispositionSTCGOutcome(
     if (purchase.offerEndPrice > purchase.offerStartPrice) {
         if (marketPrice > purchase.offerEndPrice) {
             return ESPPTaxOutcome.GOOD;
+        } else if (marketPrice < purchase.offerStartPrice) {
+            return ESPPTaxOutcome.BEST;
         }
 
         return ESPPTaxOutcome.BETTER;
     } else if (purchase.offerEndPrice < purchase.offerStartPrice) {
         if (marketPrice > purchase.offerEndPrice) {
+            if (marketPrice <= purchase.offerStartPrice * ESPP_DISCOUNT + purchase.purchasePrice) {
+                return ESPPTaxOutcome.BETTER;
+            }
+
             return ESPPTaxOutcome.GOOD;
         }
     }
@@ -151,9 +160,12 @@ function _calculateDisqualifyingDispositionSTCGOutcome(
     return ESPPTaxOutcome.BEST;
 }
 
-function _createDisqualifyingDispositionLTCG(purchase: ESPPPurchaseTaxes): ESPPDisposition {
+function _createDisqualifyingDispositionLTCG(
+    purchase: ESPPPurchaseTaxes,
+    marketPrice: number,
+): ESPPDisposition {
     const taxes = _calculateDisqualifyingDispositionLTCGTaxes(purchase);
-    const outcome = _calculateDisqualifyingDispositionLTCGOutcome(purchase);
+    const outcome = _calculateDisqualifyingDispositionLTCGOutcome(purchase, marketPrice);
     const endDate = _calculateQualifyingDispositionDate(purchase.grantDate, purchase.purchaseDate);
 
     return {
@@ -182,8 +194,13 @@ function _calculateDisqualifyingDispositionLTCGTaxes(purchase: ESPPPurchaseTaxes
 
 function _calculateDisqualifyingDispositionLTCGOutcome(
     purchase: ESPPPurchaseTaxes,
+    marketPrice: number,
 ): ESPPTaxOutcome {
     if (purchase.offerEndPrice > purchase.offerStartPrice) {
+        if (marketPrice < purchase.offerStartPrice) {
+            return ESPPTaxOutcome.BEST;
+        }
+
         return ESPPTaxOutcome.BETTER;
     } else if (purchase.offerEndPrice < purchase.offerStartPrice) {
         return ESPPTaxOutcome.BEST;
