@@ -1,33 +1,31 @@
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
 import { loadESPPPurchasesTaxes, updateMarketDependentValues } from '@/utils/espp-calculations';
 import type { ESPPPurchaseTaxes } from '@/utils/espp-calculations';
 
-vi.mock('@/data/espp/purchases.json', () => {
-    return {
-      default: [
-            {
-                grantDate: new Date('2022-10-01'),
-                purchaseDate: new Date('2023-03-31'),
-                offerStartPrice: 83.12,
-                offerEndPrice: 120.10,
-                purchasePrice: 70.65,
-                shares: 96.5303,
-            },
-            {
-                grantDate: new Date('2024-10-01'),
-                purchaseDate: new Date('2025-03-31'),
-                offerStartPrice: 89.13,
-                offerEndPrice: 63.48,
-                purchasePrice: 53.96,
-                shares: 149.85,
-            },
-        ],
-    };
-});
+const MOCK_ESPP_PURCHASES = [
+    {
+        grantDate: '2022-10-01',
+        purchaseDate: '2023-03-31',
+        offerStartPrice: '83.12',
+        offerEndPrice: '120.1',
+        purchasePrice: '70.65',
+        shares: '96.5303',
+    },
+    {
+        grantDate: '2024-10-01',
+        purchaseDate: '2025-03-31',
+        offerStartPrice: '89.13',
+        offerEndPrice: '63.48',
+        purchasePrice: '53.96',
+        shares: '149.85',
+    },
+];
 
-function guardPurchaseTaxTestObject(testPurchase: ESPPPurchaseTaxes | undefined): ESPPPurchaseTaxes {
+function guardPurchaseTaxTestObject(
+    testPurchase: ESPPPurchaseTaxes | undefined,
+): ESPPPurchaseTaxes {
     if (!testPurchase || !testPurchase.offerEndPrice) {
         throw new Error('Data needed for test is not available');
     }
@@ -38,7 +36,7 @@ function guardPurchaseTaxTestObject(testPurchase: ESPPPurchaseTaxes | undefined)
 describe('espp-calculations', () => {
     describe('updateMarketDependentValues', () => {
         test('should calculate cases where offering start price is less than offering end price and market price is flat', async () => {
-            const purchasesTaxes = loadESPPPurchasesTaxes();
+            const purchasesTaxes = loadESPPPurchasesTaxes(MOCK_ESPP_PURCHASES);
             const testPurchase = guardPurchaseTaxTestObject(purchasesTaxes[0]);
 
             const marketPrice = testPurchase.offerEndPrice;
@@ -61,7 +59,7 @@ describe('espp-calculations', () => {
         });
 
         test('should calculate cases where offering start price is less than offering end price and market price is up', async () => {
-            const purchasesTaxes = loadESPPPurchasesTaxes();
+            const purchasesTaxes = loadESPPPurchasesTaxes(MOCK_ESPP_PURCHASES);
             const testPurchase = guardPurchaseTaxTestObject(purchasesTaxes[0]);
 
             const marketPrice = testPurchase.offerEndPrice + 5;
@@ -84,7 +82,7 @@ describe('espp-calculations', () => {
         });
 
         test('should calculate cases where offering start price is less than offering end price and market price is down', async () => {
-            const purchasesTaxes = loadESPPPurchasesTaxes();
+            const purchasesTaxes = loadESPPPurchasesTaxes(MOCK_ESPP_PURCHASES);
             const testPurchase = guardPurchaseTaxTestObject(purchasesTaxes[0]);
 
             const marketPrice = testPurchase.offerEndPrice - 10;
@@ -97,7 +95,7 @@ describe('espp-calculations', () => {
 
             expect(testPurchase.purchaseMarketPrice).toBe(testPurchase.offerStartPrice);
             expect(testPurchase.discountAmount).toBeCloseTo(4773.42, 2);
-            expect(testPurchase.gain).toBeCloseTo(-965.30, 2);
+            expect(testPurchase.gain).toBeCloseTo(-965.3, 2);
             expect(testPurchase.dispositions.disqualifyingSTCG.taxes).toBeCloseTo(913.95, 2);
             expect(testPurchase.dispositions.disqualifyingSTCG.outcome).toBe(ESPPTaxOutcome.BETTER);
             expect(testPurchase.dispositions.disqualifyingLTCG.taxes).toBeCloseTo(913.95, 2);
@@ -107,7 +105,7 @@ describe('espp-calculations', () => {
         });
 
         test('should calculate cases where offering start price is greater than offering end price and market price is flat', async () => {
-            const purchasesTaxes = loadESPPPurchasesTaxes();
+            const purchasesTaxes = loadESPPPurchasesTaxes(MOCK_ESPP_PURCHASES);
             const testPurchase = guardPurchaseTaxTestObject(purchasesTaxes[1]);
 
             const marketPrice = testPurchase.offerEndPrice;
@@ -130,10 +128,10 @@ describe('espp-calculations', () => {
         });
 
         test('should calculate cases where offering start price is greater than offering end price and market price is up', () => {
-            const purchasesTaxes = loadESPPPurchasesTaxes();
+            const purchasesTaxes = loadESPPPurchasesTaxes(MOCK_ESPP_PURCHASES);
             const testPurchase = guardPurchaseTaxTestObject(purchasesTaxes[1]);
 
-            const marketPrice = 70.00;
+            const marketPrice = 70.0;
 
             updateMarketDependentValues(purchasesTaxes, marketPrice);
 
@@ -153,7 +151,7 @@ describe('espp-calculations', () => {
         });
 
         test('should calculate cases where offering start price is greater than offering end price and market price is down', () => {
-            const purchasesTaxes = loadESPPPurchasesTaxes();
+            const purchasesTaxes = loadESPPPurchasesTaxes(MOCK_ESPP_PURCHASES);
             const testPurchase = guardPurchaseTaxTestObject(purchasesTaxes[1]);
 
             const marketPrice = testPurchase.offerEndPrice - 5;
