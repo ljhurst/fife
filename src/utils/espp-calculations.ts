@@ -1,10 +1,18 @@
-import esppPurchases from '@/data/espp/purchases.json';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
 import { INFINITE_DATE, addYears, latestDate } from '@/utils/date';
 
 const ESPP_DISCOUNT = 0.15;
 const ORDINARY_INCOME_TAX_RATE = 0.24;
 const LONG_TERM_CAPITAL_GAINS_TAX_RATE = 0.15;
+
+interface ESPPPurchaseRaw {
+    grantDate: string;
+    purchaseDate: string;
+    offerStartPrice: string;
+    offerEndPrice: string;
+    purchasePrice: string;
+    shares: string;
+}
 
 interface ESPPPurchase {
     grantDate: Date;
@@ -34,8 +42,8 @@ interface ESPPPurchaseTaxes extends ESPPPurchase {
     dispositions?: ESPPDispositions;
 }
 
-function loadESPPPurchasesTaxes(): ESPPPurchaseTaxes[] {
-    const esppPurchases = _loadESPPPurchases();
+function loadESPPPurchasesTaxes(esppPurchasesRaw: ESPPPurchaseRaw[]): ESPPPurchaseTaxes[] {
+    const esppPurchases = _loadESPPPurchases(esppPurchasesRaw);
 
     return esppPurchases.map(_createESPPPurchaseTaxes);
 }
@@ -65,13 +73,16 @@ function updateMarketDependentValues(purchases: ESPPPurchaseTaxes[], marketPrice
 }
 
 export { loadESPPPurchasesTaxes, updateMarketDependentValues };
-export type { ESPPPurchaseTaxes };
+export type { ESPPPurchaseRaw, ESPPPurchaseTaxes };
 
-function _loadESPPPurchases(): ESPPPurchase[] {
-    return esppPurchases.map((purchase) => ({
-        ...purchase,
+function _loadESPPPurchases(esppPurchasesRaw: ESPPPurchaseRaw[]): ESPPPurchase[] {
+    return esppPurchasesRaw.map((purchase) => ({
         grantDate: new Date(purchase.grantDate),
         purchaseDate: new Date(purchase.purchaseDate),
+        offerStartPrice: Number(purchase.offerStartPrice),
+        offerEndPrice: Number(purchase.offerEndPrice),
+        purchasePrice: Number(purchase.purchasePrice),
+        shares: Number(purchase.shares),
     }));
 }
 
