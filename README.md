@@ -1,48 +1,93 @@
-# Astro Starter Kit: Basics
+# FiFE  📈
 
-```sh
-npm create astro@latest -- --template basics
+Finance for Everyone
+
+# Website
+
+http://lj-fife.s3-website-us-east-1.amazonaws.com
+
+# Features
+
+## Work
+
+### ESPP
+
+- Upload your past ESPP purchases
+- Enter current market value for stock price
+- See tax considerations for any scenario
+
+# Deploy Instructions
+
+1. Build
+
+	```bash
+	npm run build
+	```
+
+1. Log in to AWS
+
+	Go to [AWS](https://aws.com) and log in with root user email
+
+1. Go to S3
+
+	Find the `lj-fife` bucket
+
+1. Upload files
+
+	- `dist/*`
+
+# Local Development
+
+## Framework
+
+The app is built with [Astro](https://astro.build/). Run locally with
+
+```bash
+npm run dev
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## Developer Experience
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### Unit Tests
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+We use [Vitest](https://vitest.dev/) for unit tests. Unit tests are in `test/unit`
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm run test
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Code coverage can be viewed by opening `coverage/index.html` in the browser
 
-## 🧞 Commands
+### Formatting
 
-All commands are run from the root of the project, from a terminal:
+We use [Prettier](https://prettier.io/) for formatting
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```bash
+npm run format
+```
 
-## 👀 Want to learn more?
+### Linting
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+We use [ESLint](https://eslint.org/) for linting
+
+```bash
+npm run lint:fix
+```
+
+
+### Preflight
+
+There is a helper command to do all of the above steps
+
+```bash
+npm run preflight
+```
+
+
+# Tech Stack
+
+- [Astro](https://astro.build/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [HTML](https://developer.mozilla.org/en-US/docs/Glossary/HTML5)
+- Styling via [Bulma](https://bulma.io/)
+- Hosted on [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html)
