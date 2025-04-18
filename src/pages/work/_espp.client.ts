@@ -1,8 +1,7 @@
-import Alpine from 'alpinejs';
-
 import type { XData } from '@/domain/components/x-data';
 import { ESPP_PURCHASE_REQUIRED_FIELDS } from '@/domain/espp/espp-purchase-raw';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
+import { register } from '@/utils/alpine-components';
 import { csvToJson } from '@/utils/data';
 import { formatDateYYYYMMDD } from '@/utils/date';
 import {
@@ -78,4 +77,4 @@ function purchaseTableXData(): PurchaseTableXData {
     };
 }
 
-Alpine.data('purchaseTableXData', purchaseTableXData);
+register('purchaseTableXData', purchaseTableXData);
