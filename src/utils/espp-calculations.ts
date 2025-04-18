@@ -1,18 +1,10 @@
+import type { ESPPPurchaseRaw } from '@/domain/espp/espp-purchase-raw';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
 import { INFINITE_DATE, addYears, latestDate } from '@/utils/date';
 
 const ESPP_DISCOUNT = 0.15;
 const ORDINARY_INCOME_TAX_RATE = 0.24;
 const LONG_TERM_CAPITAL_GAINS_TAX_RATE = 0.15;
-
-interface ESPPPurchaseRaw {
-    grantDate: string;
-    purchaseDate: string;
-    offerStartPrice: string;
-    offerEndPrice: string;
-    purchasePrice: string;
-    shares: string;
-}
 
 interface ESPPPurchase {
     grantDate: Date;
@@ -72,7 +64,14 @@ function updateMarketDependentValues(purchases: ESPPPurchaseTaxes[], marketPrice
     });
 }
 
-export { loadESPPPurchasesTaxes, updateMarketDependentValues };
+function clearMarketDependentValues(purchases: ESPPPurchaseTaxes[]): void {
+    purchases.forEach((purchase) => {
+        delete purchase.gain;
+        delete purchase.dispositions;
+    });
+}
+
+export { loadESPPPurchasesTaxes, updateMarketDependentValues, clearMarketDependentValues };
 export type { ESPPPurchaseRaw, ESPPPurchaseTaxes };
 
 function _loadESPPPurchases(esppPurchasesRaw: ESPPPurchaseRaw[]): ESPPPurchase[] {
