@@ -1,13 +1,19 @@
 import Alpine from 'alpinejs';
 
 import type { XData } from '@/domain/components/x-data';
+import { ESPP_PURCHASE_REQUIRED_FIELDS } from '@/domain/espp/espp-purchase-raw';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
 import { csvToJson } from '@/utils/data';
 import { formatDateYYYYMMDD } from '@/utils/date';
-import { loadESPPPurchasesTaxes, updateMarketDependentValues } from '@/utils/espp-calculations';
+import {
+    loadESPPPurchasesTaxes,
+    updateMarketDependentValues,
+    clearMarketDependentValues,
+} from '@/utils/espp-calculations';
 import type { ESPPPurchaseRaw, ESPPPurchaseTaxes } from '@/utils/espp-calculations';
 import { read } from '@/utils/file';
 import { formatUSD } from '@/utils/number';
+import { arrayToCommaSeparatedString } from '@/utils/string';
 
 type PurchaseTableXData = XData<
     {
@@ -18,8 +24,10 @@ type PurchaseTableXData = XData<
     {
         formatUSD: typeof formatUSD;
         formatDateYYYYMMDD: typeof formatDateYYYYMMDD;
+        showTaxConsiderations: () => boolean;
         onFileUpload: (event: CustomEvent) => void;
         onMarketPriceInput: () => void;
+        displayRequiredFields: () => string;
     }
 >;
 
@@ -37,6 +45,9 @@ function purchaseTableXData(): PurchaseTableXData {
         methods: {
             formatUSD,
             formatDateYYYYMMDD,
+            showTaxConsiderations(this: PurchaseTableXData): boolean {
+                return this.data.purchases.length > 0;
+            },
             async onFileUpload(this: PurchaseTableXData, event: CustomEvent): Promise<void> {
                 if (!event.detail) {
                     return;
@@ -52,12 +63,16 @@ function purchaseTableXData(): PurchaseTableXData {
                 console.log('Market Price:', marketPrice);
 
                 if (isNaN(marketPrice)) {
+                    clearMarketDependentValues(this.data.purchases);
                     return;
                 }
 
                 updateMarketDependentValues(this.data.purchases, marketPrice);
 
                 console.log('Purchases:', this.data.purchases);
+            },
+            displayRequiredFields(): string {
+                return arrayToCommaSeparatedString(ESPP_PURCHASE_REQUIRED_FIELDS);
             },
         },
     };
