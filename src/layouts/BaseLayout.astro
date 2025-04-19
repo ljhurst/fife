@@ -1,7 +1,7 @@
 ---
 import '@/styles/global.css';
-import Navigation from '@/components/organisms/Navigation.astro';
-import { SITE_EMOJI } from '@/constants';
+import Navigation from '@/components/organisms/Navigation/Navigation.astro';
+import { SITE_EMOJI, SITE_DESCRIPTION } from '@/constants';
 import { generateEmojiFaviconURL } from '@/utils/favicon';
 
 const faviconURL = generateEmojiFaviconURL(SITE_EMOJI);
@@ -14,7 +14,7 @@ const faviconURL = generateEmojiFaviconURL(SITE_EMOJI);
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href={faviconURL} />
         <meta name="generator" content={Astro.generator} />
-        <title>Astro Basics</title>
+        <title>{SITE_DESCRIPTION}</title>
     </head>
     <body>
         <Navigation />

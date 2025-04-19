@@ -3,6 +3,7 @@ import { getViteConfig } from 'astro/config';
 
 export default getViteConfig({
     test: {
+        environment: 'jsdom',
         coverage: {
             provider: 'v8',
             reporter: ['html'],

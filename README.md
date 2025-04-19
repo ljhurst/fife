@@ -62,6 +62,14 @@ There is a helper command to do all of the above steps
 npm run preflight
 ```
 
+## Pull Request
+
+### GitHub Actions
+
+The `preflight` checks must pass before merging a pull request
+
+See the [check runs](https://github.com/ljhurst/fife/actions/workflows/check.yml)
+
 ## Deploy
 
 ### GitHub Actions
