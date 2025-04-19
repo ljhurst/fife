@@ -31,7 +31,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                     </div>
                 </div>
 
-                <div class="block" x-show="methods.showTaxConsiderations" x-transition>
+                <div class="block" x-cloak x-show="methods.showTaxConsiderations" x-transition>
                     <div class="box">
                         <h2 class="title is-2">Tax Consideration Parameters</h2>
                         <div class="columns">
@@ -53,7 +53,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                     </div>
                 </div>
 
-                <div class="block" x-show="methods.showTaxConsiderations" x-transition>
+                <div class="block" x-cloak x-show="methods.showTaxConsiderations" x-transition>
                     <div class="box">
                         <h2 class="title is-2">Tax Consideration Results</h2>
                         <div class="table-container">

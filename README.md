@@ -1,44 +1,24 @@
-# FiFE  📈
+# FiFE 🪈
 
 Finance for Everyone
 
-# Website
+## Website
 
-http://lj-fife.s3-website-us-east-1.amazonaws.com
+<http://lj-fife.s3-website-us-east-1.amazonaws.com>
 
-# Features
+## Features
 
-## Work
+### Work
 
-### ESPP
+#### ESPP
 
 - Upload your past ESPP purchases
 - Enter current market value for stock price
 - See tax considerations for any scenario
 
-# Deploy Instructions
+## Local Development
 
-1. Build
-
-	```bash
-	npm run build
-	```
-
-1. Log in to AWS
-
-	Go to [AWS](https://aws.com) and log in with root user email
-
-1. Go to S3
-
-	Find the `lj-fife` bucket
-
-1. Upload files
-
-	- `dist/*`
-
-# Local Development
-
-## Framework
+### Framework
 
 The app is built with [Astro](https://astro.build/). Run locally with
 
@@ -46,9 +26,9 @@ The app is built with [Astro](https://astro.build/). Run locally with
 npm run dev
 ```
 
-## Developer Experience
+### Developer Experience
 
-### Unit Tests
+#### Unit Tests
 
 We use [Vitest](https://vitest.dev/) for unit tests. Unit tests are in `test/unit`
 
@@ -58,7 +38,7 @@ npm run test
 
 Code coverage can be viewed by opening `coverage/index.html` in the browser
 
-### Formatting
+#### Formatting
 
 We use [Prettier](https://prettier.io/) for formatting
 
@@ -66,7 +46,7 @@ We use [Prettier](https://prettier.io/) for formatting
 npm run format
 ```
 
-### Linting
+#### Linting
 
 We use [ESLint](https://eslint.org/) for linting
 
@@ -74,8 +54,7 @@ We use [ESLint](https://eslint.org/) for linting
 npm run lint:fix
 ```
 
-
-### Preflight
+#### Preflight
 
 There is a helper command to do all of the above steps
 
@@ -83,8 +62,24 @@ There is a helper command to do all of the above steps
 npm run preflight
 ```
 
+## Deploy
 
-# Tech Stack
+### GitHub Actions
+
+The app is hosted on [AWS S3](https://aws.amazon.com/s3/).
+Deployment is handled by [GitHub Actions](https://github.com/features/actions)
+
+See the workflow steps in `.github/workflows/deploy.yml`
+
+See [deployment runs](https://github.com/ljhurst/fife/actions)
+
+### AWS Credentials
+
+- IAM User: `fife-deploy-user`
+- IAM Policy: `fife-deploy-policy`
+- Access Method: `Access Keys`
+
+## Tech Stack
 
 - [Astro](https://astro.build/)
 - [TypeScript](https://www.typescriptlang.org/)

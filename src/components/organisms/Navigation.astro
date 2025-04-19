@@ -1,6 +1,14 @@
+---
+import { SITE_TITLE } from '@/constants';
+---
+
 <nav class="navbar" role="navigation" aria-label="main navigation" x-data="navigationXData()">
     <div class="navbar-brand">
-        <a class="navbar-item" href="/"> FiFE </a>
+        <a class="navbar-item" href="/">
+            <span class="has-text-weight-bold">
+                {SITE_TITLE}
+            </span>
+        </a>
 
         <a
             role="button"
