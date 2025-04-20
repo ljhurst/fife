@@ -174,34 +174,33 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                     <div class="box">
                         <h2 class="title is-2">Maximize 401k</h2>
 
-                        <fieldset disabled>
-                            <div class="field is-horizontal">
-                                <div class="field-label is-normal">
-                                    <label class="label">Contribution Percent</label>
-                                </div>
-                                <div class="field-body">
-                                    <div class="field is-narrow">
-                                        <div class="field has-addons">
-                                            <p class="control">
-                                                <a class="button is-static">
-                                                    <span class="icon is-small is-left">
-                                                        <i class="fas fa-percent"></i>
-                                                    </span>
-                                                </a>
-                                            </p>
-                                            <p class="control is-expanded">
-                                                <input
-                                                    class="input has-text-right"
-                                                    type="number"
-                                                    placeholder="0"
-                                                    :value="data.ceilContributionPercent"
-                                                />
-                                            </p>
-                                        </div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label class="label">Contribution Percent</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field is-narrow">
+                                    <div class="field has-addons">
+                                        <p class="control">
+                                            <a class="button is-primary">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-percent"></i>
+                                                </span>
+                                            </a>
+                                        </p>
+                                        <p class="control is-expanded">
+                                            <input
+                                                class="input has-text-right is-primary"
+                                                type="number"
+                                                placeholder="0"
+                                                :value="data.ceilContributionPercent"
+                                                readonly
+                                            />
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
+                        </div>
                     </div>
                 </div>
             </div>
