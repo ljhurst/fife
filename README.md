@@ -10,6 +10,10 @@ Finance for Everyone
 
 ### Work
 
+#### 401k
+
+- Enter 401k details and see contribution percent needed to maximize contributions
+
 #### ESPP
 
 - Upload your past ESPP purchases

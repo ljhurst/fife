@@ -7,6 +7,27 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     <section class="section">
         <div class="container">
             <h1 class="title is-1">ESPP</h1>
+            <div class="content">
+                <p>
+                    Employee Stock Purchase Plans (ESPPs) are great — dealing with their taxes is
+                    not.
+                </p>
+                <p>
+                    ESPP Taxes can depend on:
+                    <ul>
+                        <li>
+                            If the stock price was higher at the beginning of the offering period,
+                            or the end
+                        </li>
+                        <li>How long you hold the stock after purchase</li>
+                        <li>Whether you sell the stock at a gain or loss</li>
+                    </ul>
+                </p>
+                <p>
+                    Load your past ESPP purchases into the tool and understand your tax
+                    implications.
+                </p>
+            </div>
         </div>
     </section>
 
@@ -34,18 +55,30 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                 <div class="block" x-cloak x-show="methods.showTaxConsiderations" x-transition>
                     <div class="box">
                         <h2 class="title is-2">Tax Consideration Parameters</h2>
-                        <div class="columns">
-                            <div class="column is-4">
-                                <div class="field">
-                                    <label class="label">NKE Market Price</label>
-                                    <div class="control">
-                                        <input
-                                            class="input"
-                                            type="number"
-                                            placeholder="Enter NKE Market Price"
-                                            x-model="data.nkeMarketPrice"
-                                            @input="methods.onMarketPriceInput"
-                                        />
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label class="label">NKE Market Price</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field is-narrow">
+                                    <div class="field has-addons">
+                                        <p class="control">
+                                            <a class="button is-static">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-dollar-sign"></i>
+                                                </span>
+                                            </a>
+                                        </p>
+                                        <p class="control is-expanded">
+                                            <input
+                                                class="input has-text-right"
+                                                type="number"
+                                                min="0"
+                                                placeholder="0"
+                                                x-model="data.nkeMarketPrice"
+                                                @input="methods.onMarketPriceInput"
+                                            />
+                                        </p>
                                     </div>
                                 </div>
                             </div>
