@@ -20,6 +20,10 @@ Finance for Everyone
 - Enter current market value for stock price
 - See tax considerations for any scenario
 
+#### ESPP
+
+- Calculate paychecks remaining for the year
+
 ## Local Development
 
 ### Framework
