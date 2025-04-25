@@ -11,6 +11,13 @@ function addYears(date: Date, years: number): Date {
     return newDate;
 }
 
+function addDays(date: Date, days: number): Date {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + days);
+
+    return newDate;
+}
+
 function formatDateYYYYMMDD(date: Date): string {
     return date.toISOString().slice(0, 10);
 }
@@ -20,7 +27,9 @@ function latestDate(date1: Date, date2: Date): Date {
 }
 
 function firstDayOfNextYearFromDate(date: Date): Date {
-    return new Date(date.getFullYear() + 1, 0, 1);
+    const nextYear = date.getUTCFullYear() + 1;
+
+    return new Date(Date.UTC(nextYear, 0, 1));
 }
 
 function weeksBewteenDates(date1: Date, date2: Date): number {
@@ -34,6 +43,7 @@ export {
     INFINITE_DATE,
     WEEKS_PER_YEAR,
     addYears,
+    addDays,
     latestDate,
     formatDateYYYYMMDD,
     firstDayOfNextYearFromDate,

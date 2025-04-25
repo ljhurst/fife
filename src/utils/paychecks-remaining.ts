@@ -2,6 +2,7 @@ import type { PaychecksRemainingInput } from '@/domain/paycheck/paychecks-remain
 import {
     EPOCH_DATE,
     WEEKS_PER_YEAR,
+    addDays,
     firstDayOfNextYearFromDate,
     weeksBewteenDates,
 } from '@/utils/date';
@@ -14,9 +15,13 @@ function isPaychecksRemainingInputsReady(input: PaychecksRemainingInput): boolea
 
 function calculatePaychecksRemaining(input: PaychecksRemainingInput): number {
     const firstDayOfNextYearFromPaycheckDate = firstDayOfNextYearFromDate(input.knownPaycheckDate);
+    const firstDayOfNextYearFromPaycheckPlusOneDate = addDays(
+        firstDayOfNextYearFromPaycheckDate,
+        1,
+    );
 
     const weeksBetweenPaycheckDateAndFirstOfNextYear = Math.ceil(
-        weeksBewteenDates(input.knownPaycheckDate, firstDayOfNextYearFromPaycheckDate),
+        weeksBewteenDates(input.knownPaycheckDate, firstDayOfNextYearFromPaycheckPlusOneDate),
     );
 
     const paychecksPerWeek = input.paychecksPerYear / WEEKS_PER_YEAR;
