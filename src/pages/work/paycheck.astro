@@ -1,0 +1,122 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">Paycheck</h1>
+            <div class="content">
+                <p>You work hard enough — get a little help with your pay.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div x-data="paychecksRemainingXData()">
+                <div class="block">
+                    <div class="box">
+                        <h2 class="title is-2">Enter Your Paycheck Schedule</h2>
+
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label class="label">Paychecks Per Year</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field is-narrow">
+                                    <div class="field has-addons">
+                                        <p class="control">
+                                            <a class="button is-static">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-hashtag"></i>
+                                                </span>
+                                            </a>
+                                        </p>
+                                        <p class="control is-expanded">
+                                            <input
+                                                class="input has-text-right"
+                                                type="number"
+                                                min="0"
+                                                placeholder="0"
+                                                x-model="data.paychecksPerYear"
+                                                @input="methods.onPaychecksRemainingInput"
+                                            />
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label class="label">Known Paycheck Date</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field is-narrow">
+                                    <div class="field has-addons">
+                                        <p class="control">
+                                            <a class="button is-static">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-calendar-days"></i>
+                                                </span>
+                                            </a>
+                                        </p>
+                                        <p class="control is-expanded date-min-width">
+                                            <input
+                                                class="input has-text-right"
+                                                type="date"
+                                                x-model="data.knownPaycheckDate"
+                                                @input="methods.onPaychecksRemainingInput"
+                                            />
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="block" x-cloak x-show="methods.showPaychecksRemaining" x-transition>
+                    <div class="box">
+                        <h2 class="title is-2">Paychecks Remaining</h2>
+
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label class="label">Paychecks Remaining</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field is-narrow">
+                                    <div class="field has-addons">
+                                        <p class="control">
+                                            <a class="button is-primary">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-hashtag"></i>
+                                                </span>
+                                            </a>
+                                        </p>
+                                        <p class="control is-expanded">
+                                            <input
+                                                class="input has-text-right is-primary"
+                                                type="number"
+                                                placeholder="0"
+                                                :value="data.paychecksRemaining"
+                                                readonly
+                                            />
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</BaseLayout>
+
+<style>
+    .date-min-width {
+        min-width: 200px;
+    }
+</style>
+
+<script src="./_paycheck.client.ts"></script>
