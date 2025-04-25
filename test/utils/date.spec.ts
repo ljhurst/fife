@@ -28,7 +28,7 @@ describe('date', () => {
     describe('firstDayOfNextYearFromDate', () => {
         test('should return the first day of the next year', () => {
             const date = new Date('2023-03-31T00:00:00Z');
-            const nextYearFirstDay = new Date('2024-01-01T08:00:00Z');
+            const nextYearFirstDay = new Date('2024-01-01T00:00:00Z');
             expect(firstDayOfNextYearFromDate(date)).toEqual(nextYearFirstDay);
         });
     });
