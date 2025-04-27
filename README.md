@@ -4,7 +4,7 @@ Finance for Everyone
 
 ## Website
 
-<http://lj-fife.s3-website-us-east-1.amazonaws.com>
+<https://d3de9r2gorcf05.cloudfront.net/>
 
 ## Features
 
@@ -101,4 +101,5 @@ See [deployment runs](https://github.com/ljhurst/fife/actions)
 - [TypeScript](https://www.typescriptlang.org/)
 - [HTML](https://developer.mozilla.org/en-US/docs/Glossary/HTML5)
 - Styling via [Bulma](https://bulma.io/)
-- Hosted on [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html)
+- Hosted with [AWS CloudFront](https://aws.amazon.com/cloudfront/) on [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html)
+- User auth via [AWS Cognito](https://aws.amazon.com/cognito/)

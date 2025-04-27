@@ -1,0 +1,19 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+    <section class="section">
+        <div class="container">Successfully logged in. Redirecting...</div>
+    </section>
+</BaseLayout>
+
+<script>
+    import { getUserManager } from '@/utils/auth';
+
+    const userManager = getUserManager();
+
+    await userManager.signinCallback();
+
+    window.location.href = '/';
+</script>
