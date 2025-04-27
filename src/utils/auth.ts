@@ -1,13 +1,14 @@
 import { UserManager } from 'oidc-client-ts';
 
 import type { CurrentUser } from '@/domain/auth/current-user';
+import { getRuntimeConfig } from '@/utils/runtime';
 
 const CLIENT_ID = '13f9h1bnc01ep9mjlo3dmqubln';
 
 const COGNITO_AUTH_CONFIG = {
     authority: 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_DOgM3Opvr',
     client_id: CLIENT_ID,
-    redirect_uri: 'http://localhost:4321/auth/after-login',
+    redirect_uri: `${getRuntimeConfig().baseUrl}/auth/after-login`,
     response_type: 'code',
     scope: 'openid',
 };
@@ -48,7 +49,7 @@ async function signOutRedirect(): Promise<void> {
 
     await userManager.removeUser();
 
-    const logoutUri = 'http://localhost:4321/';
+    const logoutUri = `${getRuntimeConfig().baseUrl}/`;
     const cognitoDomain = 'https://us-east-1dogm3opvr.auth.us-east-1.amazoncognito.com';
 
     const clientIdParam = `client_id=${CLIENT_ID}`;
