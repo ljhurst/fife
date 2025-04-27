@@ -1,8 +1,17 @@
 ---
+import Logout from '@/components/molecules/auth/Logout/Logout.astro';
+import SignIn from '@/components/molecules/auth/SignIn/SignIn.astro';
+import SignUp from '@/components/molecules/auth/SignUp/SignUp.astro';
 import { SITE_TITLE } from '@/constants';
 ---
 
-<nav class="navbar" role="navigation" aria-label="main navigation" x-data="navigationXData()">
+<nav
+    class="navbar"
+    role="navigation"
+    aria-label="main navigation"
+    x-data="navigationXData()"
+    x-init="methods.init"
+>
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
             <span class="has-text-weight-bold">
@@ -33,6 +42,20 @@ import { SITE_TITLE } from '@/constants';
                     <a class="navbar-item" href="/work/espp/">ESPP</a>
                     <a class="navbar-item" href="/work/paycheck/">Paycheck</a>
                 </div>
+            </div>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item" x-show="!data.currentUser" x-cloak>
+                <SignUp />
+            </div>
+            <div class="navbar-item" x-show="!data.currentUser" x-cloak>
+                <SignIn />
+            </div>
+            <div class="navbar-item" x-show="data.currentUser" x-cloak>
+                Hello, <span x-text="data.currentUser?.givenName"></span>
+            </div>
+            <div class="navbar-item" x-show="data.currentUser" x-cloak>
+                <Logout />
             </div>
         </div>
     </div>
