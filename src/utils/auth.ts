@@ -1,14 +1,19 @@
 import { UserManager } from 'oidc-client-ts';
 
+import { ROUTES } from '@/constants';
 import type { CurrentUser } from '@/domain/auth/current-user';
 import { getRuntimeConfig } from '@/utils/runtime';
 
+const AUTHORITY = 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_DOgM3Opvr';
+const COGNITO_DOMAIN = 'https://us-east-1dogm3opvr.auth.us-east-1.amazoncognito.com';
 const CLIENT_ID = '13f9h1bnc01ep9mjlo3dmqubln';
+const AFTER_LOGIN_URL = `${getRuntimeConfig().baseUrl}/${ROUTES.AUTH_AFTER_LOGIN}`;
+const AFTER_LOGOUT_URL = `${getRuntimeConfig().baseUrl}/`;
 
 const COGNITO_AUTH_CONFIG = {
-    authority: 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_DOgM3Opvr',
+    authority: AUTHORITY,
     client_id: CLIENT_ID,
-    redirect_uri: `${getRuntimeConfig().baseUrl}/auth/after-login`,
+    redirect_uri: AFTER_LOGIN_URL,
     response_type: 'code',
     scope: 'openid',
 };
@@ -49,12 +54,10 @@ async function signOutRedirect(): Promise<void> {
 
     await userManager.removeUser();
 
-    const logoutUri = `${getRuntimeConfig().baseUrl}/`;
-    const cognitoDomain = 'https://us-east-1dogm3opvr.auth.us-east-1.amazoncognito.com';
-
     const clientIdParam = `client_id=${CLIENT_ID}`;
-    const logoutUriParam = `logout_uri=${encodeURIComponent(logoutUri)}`;
-    window.location.href = `${cognitoDomain}/logout?${clientIdParam}&${logoutUriParam}`;
+    const logoutUriParam = `logout_uri=${encodeURIComponent(AFTER_LOGOUT_URL)}`;
+
+    window.location.href = `${COGNITO_DOMAIN}/logout?${clientIdParam}&${logoutUriParam}`;
 }
 
 export { getUserManager, getCurrentUser, isAuthenticated, signOutRedirect };

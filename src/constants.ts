@@ -2,4 +2,12 @@ const SITE_EMOJI = '🪈';
 const SITE_TITLE = `FiFE ${SITE_EMOJI}`;
 const SITE_DESCRIPTION = 'Finance for Everyone';
 
-export { SITE_EMOJI, SITE_TITLE, SITE_DESCRIPTION };
+const ROUTES = Object.freeze({
+    HOME: '/',
+    WORK_401K: 'work/401k/',
+    WORK_ESPP: 'work/espp/',
+    WORK_PAYCHECK: 'work/paycheck/',
+    AUTH_AFTER_LOGIN: 'auth/after-login/',
+});
+
+export { SITE_EMOJI, SITE_TITLE, SITE_DESCRIPTION, ROUTES };

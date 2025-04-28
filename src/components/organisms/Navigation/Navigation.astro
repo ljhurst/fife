@@ -2,7 +2,7 @@
 import Logout from '@/components/molecules/auth/Logout/Logout.astro';
 import SignIn from '@/components/molecules/auth/SignIn/SignIn.astro';
 import SignUp from '@/components/molecules/auth/SignUp/SignUp.astro';
-import { SITE_TITLE } from '@/constants';
+import { SITE_TITLE, ROUTES } from '@/constants';
 ---
 
 <nav
@@ -13,7 +13,7 @@ import { SITE_TITLE } from '@/constants';
     x-init="methods.init"
 >
     <div class="navbar-brand">
-        <a class="navbar-item" href="/">
+        <a class="navbar-item" href="{ROUTES.HOME}">
             <span class="has-text-weight-bold">
                 {SITE_TITLE}
             </span>
@@ -38,9 +38,9 @@ import { SITE_TITLE } from '@/constants';
             <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">Work</a>
                 <div class="navbar-dropdown">
-                    <a class="navbar-item" href="/work/401k/">401k</a>
-                    <a class="navbar-item" href="/work/espp/">ESPP</a>
-                    <a class="navbar-item" href="/work/paycheck/">Paycheck</a>
+                    <a class="navbar-item" href="/{ROUTES.WORK_401K}">401k</a>
+                    <a class="navbar-item" href="/{ROUTES.WORK_ESPP}">ESPP</a>
+                    <a class="navbar-item" href="/{ROUTES.WORK_PAYCHECK}">Paycheck</a>
                 </div>
             </div>
         </div>
