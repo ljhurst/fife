@@ -30,17 +30,17 @@ async function getCurrentUser(): Promise<CurrentUser | null> {
     const userManager = getUserManager();
     const user = await userManager.getUser();
 
-    if (user) {
-        if (!user.profile.given_name) {
-            throw new Error('No given name found in user profile');
-        }
-
-        return {
-            givenName: user.profile.given_name,
-        };
+    if (!user) {
+        return null;
     }
 
-    return null;
+    if (!user.profile.given_name) {
+        throw new Error('No given name found in user profile');
+    }
+
+    return {
+        givenName: user.profile.given_name,
+    };
 }
 
 async function isAuthenticated(): Promise<boolean> {

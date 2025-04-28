@@ -3,7 +3,7 @@ interface RuntimeConfig {
 }
 
 function getRuntimeConfig(): RuntimeConfig {
-    const isDev = import.meta.env.DEV;
+    const isDev = isDevelopmentEnv();
 
     const baseUrl = getBaseUrl(isDev);
 
@@ -13,6 +13,10 @@ function getRuntimeConfig(): RuntimeConfig {
 }
 
 export { getRuntimeConfig };
+
+function isDevelopmentEnv(): boolean {
+    return window.location.hostname === 'localhost';
+}
 
 function getBaseUrl(isDev: boolean): string {
     if (isDev) {

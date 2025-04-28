@@ -21,5 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Debug dependency versions
+        run: |
+          echo "TypeScript: $(npm list typescript | grep typescript)"
+          echo "Vite: $(npm list vite | grep vite)"
+          echo "Node: $(node --version)"
+
       - name: Run preflight checks
         run: npm run preflight
