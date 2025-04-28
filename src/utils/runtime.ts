@@ -19,5 +19,5 @@ function getBaseUrl(isDev: boolean): string {
         return 'http://localhost:4321';
     }
 
-    return 'https://d3de9r2gorcf05.cloudfront.net/';
+    return 'https://d3de9r2gorcf05.cloudfront.net';
 }
