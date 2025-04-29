@@ -14,7 +14,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
     <section class="section">
         <div class="container">
-            <div x-data="paychecksRemainingXData()">
+            <div x-data="paychecksRemainingXData()" x-init="methods.init">
                 <div class="block">
                     <div class="box">
                         <h2 class="title is-2">Enter Your Paycheck Schedule</h2>

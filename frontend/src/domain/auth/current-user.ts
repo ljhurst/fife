@@ -1,4 +1,5 @@
 interface CurrentUser {
+    id: string;
     givenName: string;
 }
 

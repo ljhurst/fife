@@ -1,3 +1,4 @@
+import { get } from '@/api/resources/user';
 import type { Maximize401kInput } from '@/domain/401k/maximize-401k-input';
 import type { XData } from '@/domain/components/x-data';
 import {
@@ -5,6 +6,7 @@ import {
     calculate401kContributionPercent,
 } from '@/utils/401k-calculations';
 import { register } from '@/utils/alpine-components';
+import { getCurrentUser } from '@/utils/auth';
 
 type Maximize401kXData = XData<
     {
@@ -16,6 +18,7 @@ type Maximize401kXData = XData<
         ceilContributionPercent: number | null;
     },
     {
+        init: () => Promise<void>;
         showMaximize401k: () => boolean;
         on401kDetailsInput: () => void;
     }
@@ -32,6 +35,19 @@ function maximize401kXData(): Maximize401kXData {
             ceilContributionPercent: null,
         },
         methods: {
+            async init(this: Maximize401kXData): Promise<void> {
+                const user = await getCurrentUser();
+
+                if (!user) {
+                    console.log('User not found');
+                    return;
+                }
+
+                const userSettings = await get(user.id);
+
+                this.data.annualSalary = userSettings.settings.finance.annualSalary.toString();
+                this.data.paychecksPerYear = userSettings.settings.finance.paychecksPerYear;
+            },
             showMaximize401k(this: Maximize401kXData): boolean {
                 const input = parseInputs(this.data);
 

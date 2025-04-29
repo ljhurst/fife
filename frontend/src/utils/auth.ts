@@ -34,11 +34,12 @@ async function getCurrentUser(): Promise<CurrentUser | null> {
         return null;
     }
 
-    if (!user.profile.given_name) {
-        throw new Error('No given name found in user profile');
+    if (!user.profile.sub || !user.profile.given_name) {
+        throw new Error('Missing required user attributes');
     }
 
     return {
+        id: user.profile.sub,
         givenName: user.profile.given_name,
     };
 }

@@ -1,6 +1,8 @@
+import { get } from '@/api/resources/user';
 import type { XData } from '@/domain/components/x-data';
 import type { PaychecksRemainingInput } from '@/domain/paycheck/paychecks-remaining-input';
 import { register } from '@/utils/alpine-components';
+import { getCurrentUser } from '@/utils/auth';
 import {
     isPaychecksRemainingInputsReady,
     calculatePaychecksRemaining,
@@ -13,6 +15,7 @@ type PaychecksRemainingXData = XData<
         paychecksRemaining: number | null;
     },
     {
+        init: () => Promise<void>;
         showPaychecksRemaining: () => boolean;
         onPaychecksRemainingInput: () => void;
     }
@@ -26,6 +29,19 @@ function paychecksRemainingXData(): PaychecksRemainingXData {
             paychecksRemaining: null,
         },
         methods: {
+            async init(this: PaychecksRemainingXData): Promise<void> {
+                const user = await getCurrentUser();
+
+                if (!user) {
+                    console.log('User not found');
+                    return;
+                }
+
+                const userSettings = await get(user.id);
+
+                this.data.paychecksPerYear =
+                    userSettings.settings.finance.paychecksPerYear.toString();
+            },
             showPaychecksRemaining(this: PaychecksRemainingXData): boolean {
                 const input = parsePaycheckRemainingInputs(this.data);
 

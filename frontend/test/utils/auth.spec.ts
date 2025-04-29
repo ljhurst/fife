@@ -48,6 +48,7 @@ describe('auth', () => {
             const userManager = auth.getUserManager();
             userManager.getUser = vi.fn().mockResolvedValue({
                 profile: {
+                    sub: '123',
                     given_name: 'John',
                 },
             });
@@ -56,7 +57,7 @@ describe('auth', () => {
 
             const user = await auth.getCurrentUser();
 
-            expect(user).toEqual({ givenName: 'John' });
+            expect(user).toEqual({ id: '123', givenName: 'John' });
         });
     });
 
@@ -71,6 +72,7 @@ describe('auth', () => {
             const userManager = auth.getUserManager();
             userManager.getUser = vi.fn().mockResolvedValue({
                 profile: {
+                    sub: '123',
                     given_name: 'John',
                 },
             });
