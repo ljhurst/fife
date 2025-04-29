@@ -27,3 +27,26 @@ jobs:
 
       - name: Run preflight checks
         run: npm run preflight
+
+  check-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Format
+        run: go fmt ./...
+
+      - name: Lint
+        run: go vet ./...
