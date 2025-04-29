@@ -95,6 +95,57 @@ See [deployment runs](https://github.com/ljhurst/fife/actions)
 - IAM Policy: `fife-deploy-policy`
 - Access Method: `Access Keys`
 
+## AWS Resources
+
+### API Gateway
+
+#### APIs
+
+- `fife-api`
+
+### Cognito
+
+#### User Pools
+
+- `fife-user-pool`
+
+#### App Clients
+
+- `fife-app-client`
+
+### DynamoDB
+
+#### Tables
+
+- `fife-users`
+
+### IAM
+
+#### Users
+
+- `fife-deploy-user`
+
+#### Roles
+
+- `fife-lambda-apigateway-role`
+
+#### Policies
+
+- `fife-lambda-apigateway-policy`
+- `fife-deploy-policy`
+
+### Lambda
+
+#### Functions
+
+- `fife-user-get`
+
+### S3
+
+#### Buckets
+
+- `lj-fife`
+
 ## Tech Stack
 
 - [Astro](https://astro.build/)
