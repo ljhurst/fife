@@ -6,8 +6,11 @@ on:
     branches: [main]
 
 jobs:
-  check:
+  check-frontend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - uses: actions/checkout@v3
@@ -17,15 +20,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Debug dependency versions
-        run: |
-          echo "TypeScript: $(npm list typescript | grep typescript)"
-          echo "Vite: $(npm list vite | grep vite)"
-          echo "Node: $(node --version)"
 
       - name: Run preflight checks
         run: npm run preflight
