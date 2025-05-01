@@ -1,5 +1,6 @@
 ---
 import FileUpload from '@/components/molecules/FileUpload/FileUpload.astro';
+import NumberInput from '@/components/molecules/NumberInput/NumberInput.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
@@ -55,34 +56,13 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                 <div class="block" x-cloak x-show="methods.showTaxConsiderations" x-transition>
                     <div class="box">
                         <h2 class="title is-2">Tax Consideration Parameters</h2>
-                        <div class="field is-horizontal">
-                            <div class="field-label is-normal">
-                                <label class="label">NKE Market Price</label>
-                            </div>
-                            <div class="field-body">
-                                <div class="field is-narrow">
-                                    <div class="field has-addons">
-                                        <p class="control">
-                                            <a class="button is-static">
-                                                <span class="icon is-small is-left">
-                                                    <i class="fas fa-dollar-sign"></i>
-                                                </span>
-                                            </a>
-                                        </p>
-                                        <p class="control is-expanded">
-                                            <input
-                                                class="input has-text-right"
-                                                type="number"
-                                                min="0"
-                                                placeholder="0"
-                                                x-model="data.nkeMarketPrice"
-                                                @input="methods.onMarketPriceInput"
-                                            />
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+                        <NumberInput
+                            label="NKE Market Price"
+                            addOnIcon="fa-dollar-sign"
+                            xModel="data.nkeMarketPrice"
+                            onInput="methods.onMarketPriceInput"
+                        />
                     </div>
                 </div>
 
