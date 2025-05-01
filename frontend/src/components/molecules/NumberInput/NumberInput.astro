@@ -1,0 +1,59 @@
+---
+interface Props {
+    label: string;
+    extraStyle?: string;
+    addOnIcon: string;
+    addOnStatic?: string;
+    value?: number;
+    xModel?: string;
+    onInput: (event: Event) => void;
+    readonly?: string;
+}
+
+const {
+    label,
+    extraStyle = '',
+    addOnIcon,
+    addOnStatic = 'true',
+    value,
+    xModel,
+    onInput,
+    readonly = 'false',
+} = Astro.props;
+
+const isAddOnStatic = addOnStatic === 'true';
+const isValue = Boolean(value);
+const isXModel = Boolean(xModel);
+const isReadOnly = readonly === 'true';
+---
+
+<div class="field is-horizontal">
+    <div class="field-label is-normal">
+        <label class="label">{label}</label>
+    </div>
+    <div class="field-body">
+        <div class="field is-narrow">
+            <div class="field has-addons">
+                <p class="control">
+                    <a class={`button ${isAddOnStatic ? 'is-static' : ''} ${extraStyle}`}>
+                        <span class="icon is-small is-left">
+                            <i class={`fas ${addOnIcon}`}></i>
+                        </span>
+                    </a>
+                </p>
+                <p class="control is-expanded">
+                    <input
+                        class={`input has-text-right ${extraStyle}`}
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        {...isValue ? { ':value': value } : ''}
+                        {...isXModel ? { 'x-model': xModel } : ''}
+                        @input={onInput}
+                        {...isReadOnly ? { readonly: true } : ''}
+                    />
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
