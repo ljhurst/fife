@@ -79,7 +79,9 @@ lint:
 .PHONY: test
 test:
 	@echo "Running tests..."
-	@go test ./... -v
+	@go test ./... -coverprofile=coverage.out
+	@go tool cover -html=coverage.out -o coverage.html
+	@go tool cover -func=coverage.out
 
 # Run preflight
 .PHONY: preflight
