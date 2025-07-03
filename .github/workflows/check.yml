@@ -45,8 +45,5 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Format
-        run: go fmt ./...
-
-      - name: Lint
-        run: go vet ./...
+      - name: Run preflight checks
+        run: make preflight
