@@ -74,7 +74,15 @@ npm run preflight
 
 ### Framework
 
-The API uses Go Lambdas behind and API gateway. Each API route has its own `main.go` under `cmd/`. Those use shared code under `pkg/` and are compiled into binaries under `bin/`. The binaries are uploaded to the the lambda functions
+The API uses Go Lambdas behind and API gateway. Each API route has its own `main.go` under `cmd/`. Those use shared code under `pkg/` and are compiled into binaries under `bin/`. The binaries are uploaded to the the lambda functions.
+
+First create the zip files
+
+```bash
+make lambda-packages
+```
+
+Then log into the console and upload each zip file to its appropriate Lambda function
 
 ### Developer Experience
 
