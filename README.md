@@ -20,11 +20,11 @@ Finance for Everyone
 - Enter current market value for stock price
 - See tax considerations for any scenario
 
-#### ESPP
+#### Paycheck
 
 - Calculate paychecks remaining for the year
 
-## Local Development
+## UI
 
 ### Framework
 
@@ -68,6 +68,54 @@ There is a helper command to do all of the above steps
 
 ```bash
 npm run preflight
+```
+
+## API
+
+### Framework
+
+The API uses Go Lambdas behind and API gateway. Each API route has its own `main.go` under `cmd/`. Those use shared code under `pkg/` and are compiled into binaries under `bin/`. The binaries are uploaded to the the lambda functions.
+
+First create the zip files
+
+```bash
+make lambda-packages
+```
+
+Then log into the console and upload each zip file to its appropriate Lambda function
+
+### Developer Experience
+
+#### Unit Tests
+
+We use [Go Test](https://pkg.go.dev/cmd/go#hdr-Test_packages) for unit tests
+
+```bash
+go test ./...
+```
+
+#### Formatting
+
+We use [Gofmt](https://pkg.go.dev/cmd/gofmt) for formatting
+
+```bash
+go fmt ./...
+```
+
+#### Linting
+
+We use [Vet](https://pkg.go.dev/cmd/vet@go1.24.4) for linting
+
+```bash
+go vet ./...
+```
+
+#### Preflight
+
+There is a helper command to do all the above steps
+
+```bash
+make preflight
 ```
 
 ## Pull Request

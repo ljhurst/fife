@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/ljhurst/fife/pkg/constants"
 	"github.com/ljhurst/fife/pkg/db"
+	"github.com/ljhurst/fife/pkg/models"
 	"github.com/ljhurst/fife/pkg/utils"
 )
 
@@ -21,19 +23,21 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 		return utils.MissingPathParameterError(constants.PathUserID)
 	}
 
+	var userSettings models.UserSettings
+	if err := json.Unmarshal([]byte(request.Body), &userSettings); err != nil {
+		return utils.InvalidRequestBodyError()
+	}
+
 	sess := session.Must(session.NewSession())
 	svc := dynamodb.New(sess, aws.NewConfig().WithRegion(os.Getenv("AWS_REGION")))
 
-	user, err := db.GetUser(svc, userID)
+	updatedUser, err := db.UpdateUserSettings(svc, userID, userSettings)
+
 	if err != nil {
-		return utils.APIResponse(500, map[string]string{"error": "Failed to retrieve user"})
+		return utils.APIResponse(500, map[string]string{"error": "Failed to update user settings"})
 	}
 
-	if user == nil {
-		return utils.APIResponse(404, map[string]string{"error": "User not found"})
-	}
-
-	return utils.APIResponse(200, user)
+	return utils.APIResponse(200, updatedUser)
 }
 
 func main() {
