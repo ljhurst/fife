@@ -1,14 +1,13 @@
 package db
 
 import (
-	"time"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
 	"github.com/ljhurst/fife/pkg/models"
+	"github.com/ljhurst/fife/pkg/utils"
 )
 
 const (
@@ -44,7 +43,7 @@ func GetUser(svc dynamodbiface.DynamoDBAPI, userID string) (*models.User, error)
 }
 
 func UpdateUserSettings(svc dynamodbiface.DynamoDBAPI, userID string, settings models.UserSettings) (*models.User, error) {
-	currentTime := time.Now().UTC().Format(time.RFC3339)
+	currentTime := utils.GetCurrentTimeUTC()
 
 	update := expression.Set(expression.Name("settings"), expression.Value(settings))
 	update = update.Set(expression.Name("updatedAt"), expression.Value(currentTime))

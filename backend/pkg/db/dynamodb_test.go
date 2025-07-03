@@ -3,7 +3,6 @@ package db
 import (
 	"errors"
 	"testing"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -243,12 +242,4 @@ func TestUpdateUserSettings(t *testing.T) {
 			assert.Equal(t, tc.expectedUser, user)
 		})
 	}
-}
-
-func TestTimeFormat(t *testing.T) {
-	fixedTime := time.Date(2023, 7, 3, 12, 0, 0, 0, time.UTC)
-
-	formattedTime := fixedTime.Format(time.RFC3339)
-
-	assert.Equal(t, "2023-07-03T12:00:00Z", formattedTime)
 }

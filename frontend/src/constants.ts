@@ -7,6 +7,7 @@ const ROUTES = Object.freeze({
     WORK_401K: 'work/401k/',
     WORK_ESPP: 'work/espp/',
     WORK_PAYCHECK: 'work/paycheck/',
+    MY_SETTINGS: 'my/settings/',
     AUTH_AFTER_LOGIN: 'auth/after-login/',
 });
 
