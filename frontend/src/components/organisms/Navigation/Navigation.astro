@@ -52,10 +52,17 @@ import { SITE_TITLE, ROUTES } from '@/constants';
                 <SignIn />
             </div>
             <div class="navbar-item" x-show="data.currentUser" x-cloak>
-                Hello, <span x-text="data.currentUser?.givenName"></span>
-            </div>
-            <div class="navbar-item" x-show="data.currentUser" x-cloak>
-                <Logout />
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        Hello, <span x-text="data.currentUser?.givenName"></span></a
+                    >
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item" href={`/${ROUTES.MY_SETTINGS}`}>Settings</a>
+                    </div>
+                </div>
+                <div class="navbar-item" x-show="data.currentUser" x-cloak>
+                    <Logout />
+                </div>
             </div>
         </div>
     </div>

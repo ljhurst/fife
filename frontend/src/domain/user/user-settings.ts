@@ -7,11 +7,22 @@ interface Settings {
     finance: FinanceSettings;
 }
 
-interface UserSettings {
-    userId: string;
+interface ChangeableSettings {
     settings: Settings;
+}
+
+interface BaseUserSettings extends ChangeableSettings {
+    userId: string;
+}
+
+interface UserSettings extends BaseUserSettings {
     createdAt: Date;
     updatedAt: Date;
 }
 
-export type { UserSettings };
+interface RawUserSettings extends BaseUserSettings {
+    createdAt: string;
+    updatedAt: string;
+}
+
+export type { BaseUserSettings, Settings, UserSettings, RawUserSettings };

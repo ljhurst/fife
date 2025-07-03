@@ -1,0 +1,82 @@
+---
+import NumberInput from '@/components/molecules/NumberInput/NumberInput.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">Settings</h1>
+            <div class="content">
+                <p>Enter your info so we can get you answers fast.</p>
+                <p>
+                    Your data is only ever used to provide you with answers and is never shared with
+                    anyone.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div x-data="settingsXData()" x-init="methods.init">
+                <div class="block">
+                    <div class="box">
+                        <h2 class="title is-2">Personal Finance</h2>
+
+                        <NumberInput
+                            label="Annual Salary"
+                            addOnIcon="fa-dollar-sign"
+                            xModel="data.annualSalary"
+                            onInput="methods.onSettingsInput"
+                        />
+
+                        <NumberInput
+                            label="Paychecks Per Year"
+                            addOnIcon="fa-hashtag"
+                            xModel="data.paychecksPerYear"
+                            onInput="methods.onSettingsInput"
+                        />
+
+                        <div class="field is-horizontal">
+                            <div class="field-label"></div>
+                            <div class="field-body">
+                                <div class="field is-narrow">
+                                    <div class="control">
+                                        <button
+                                            :class="{ 'is-loading': data.isSaving }"
+                                            type="submit"
+                                            class="button is-primary"
+                                            @click="methods.saveSettings"
+                                            :disabled="methods.isSaveDisabled"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <template x-if="data.saveError" x-transition>
+                            <div class="field is-horizontal">
+                                <div class="field-label"></div>
+                                <div class="field-body">
+                                    <div class="field is-narrow">
+                                        <article class="message is-danger">
+                                            <div class="message-body">
+                                                Sorry! We hit a snag while saving your settings.
+                                                Please try again.
+                                            </div>
+                                        </article>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</BaseLayout>
+
+<script src="./_settings.client.ts"></script>
