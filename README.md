@@ -94,6 +94,8 @@ We use [Go Test](https://pkg.go.dev/cmd/go#hdr-Test_packages) for unit tests
 go test ./...
 ```
 
+Code coverage can be viewed by opening `coverage.html`
+
 #### Formatting
 
 We use [Gofmt](https://pkg.go.dev/cmd/gofmt) for formatting

@@ -30,3 +30,9 @@ frontend/coverage/
 
 # build output
 backend/bin/
+
+# coverage reports
+backend/coverage.*
+
+# Aider
+.aider*
