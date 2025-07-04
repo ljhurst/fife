@@ -52,38 +52,38 @@ jobs:
       run:
         working-directory: backend
 
-  steps:
-    - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-    - name: Setup Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.24'
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
 
-    - name: Install dependencies
-      run: go mod download
+      - name: Install dependencies
+        run: go mod download
 
-    - name: Build
-      run: make lambda-packages
+      - name: Build
+        run: make lambda-packages
 
-    - name: Configure AWS credentials
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+      - name: Configure AWS credentials
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-    - name: Deploy to Lambda
-      run: |
-        for zip_file in $(find bin/lambda/arm64 -name "function.zip"); do
-          function_dir=$(dirname "$zip_file")
+      - name: Deploy to Lambda
+        run: |
+          for zip_file in $(find bin/lambda/arm64 -name "function.zip"); do
+            function_dir=$(dirname "$zip_file")
 
-          parent_dir=$(basename "$(dirname "$function_dir")")
-          function_dir_name=$(basename "$function_dir")
+            parent_dir=$(basename "$(dirname "$function_dir")")
+            function_dir_name=$(basename "$function_dir")
 
-          function_name="fife-${parent_dir}-${function_dir_name}"
+            function_name="fife-${parent_dir}-${function_dir_name}"
 
-          aws lambda update-function-code \
-            --function-name "$function_name" \
-            --zip-file "fileb://$zip_file" \
-            --publish
-        done
+            aws lambda update-function-code \
+              --function-name "$function_name" \
+              --zip-file "fileb://$zip_file" \
+              --publish
+          done
