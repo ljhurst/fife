@@ -64,6 +64,7 @@ func GetEsppLot(svc dynamodbiface.DynamoDBAPI, id string) (*models.EsppLot, erro
 func GetEsppLotsByUserID(svc dynamodbiface.DynamoDBAPI, userID string) ([]*models.EsppLot, error) {
 	input := &dynamodb.QueryInput{
 		TableName: aws.String(EsppLotsTableName),
+		IndexName: aws.String("userId-index"),
 		KeyConditions: map[string]*dynamodb.Condition{
 			"userId": {
 				ComparisonOperator: aws.String("EQ"),

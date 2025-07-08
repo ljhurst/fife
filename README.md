@@ -74,7 +74,10 @@ npm run preflight
 
 ### Framework
 
-The API uses Go Lambdas behind and API gateway. Each API route has its own `main.go` under `cmd/`. Those use shared code under `pkg/` and are compiled into binaries under `bin/`. The binaries are uploaded to the the lambda functions.
+The API uses Go Lambdas behind and API gateway.
+Each API route has its own `main.go` under `cmd/`.
+Those use shared code under `pkg/` and are compiled into binaries under `bin/`.
+The binaries are uploaded to the lambda functions.
 
 First create the zip files
 
@@ -168,6 +171,9 @@ See [deployment runs](https://github.com/ljhurst/fife/actions)
 #### Tables
 
 - `fife-users`
+- `fife-espp-lots`
+  - Indexes
+    - `userId-index`
 
 ### IAM
 
@@ -188,7 +194,12 @@ See [deployment runs](https://github.com/ljhurst/fife/actions)
 
 #### Functions
 
+- `fife-espp-lot-create`
+- `fife-espp-lot-delete`
+- `fife-espp-lot-get`
+- `fife-user-espp-lot-list`
 - `fife-user-get`
+- `fife-user-update`
 
 ### S3
 
