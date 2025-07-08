@@ -34,8 +34,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
     <section class="section">
         <div class="container">
-            <div x-data="purchaseTableXData()" @upload="methods.onFileUpload">
-                <div class="block">
+            <div x-data="purchaseTableXData()" x-init="methods.init" @upload="methods.onFileUpload">
+                <div class="block" x-cloak x-show="data.user" x-transition>
+                    <div class="box">
+                        <h2 class="title is-2">Upload an ESPP Lot</h2>
+                        <div class="block">Test</div>
+                    </div>
+                </div>
+
+                <div class="block" x-cloak x-show="!data.user" x-transition>
                     <div class="box">
                         <h2 class="title is-2">Upload Your ESPP Purchases</h2>
                         <div class="block">

@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { API_HOST } from '@/api/constants';
-import { get, update } from '@/api/resources/user';
+import { esppLotList, get, update } from '@/api/resources/user';
 import type { RawUserSettings, Settings } from '@/domain/user/user-settings';
 
-describe('User API Resource', () => {
+describe('user', () => {
     const mockUserId = 'user-123';
     const mockRawUserSettings: RawUserSettings = {
         userId: mockUserId,
@@ -122,6 +122,54 @@ describe('User API Resource', () => {
             await expect(update(mockUserId, mockSettings)).rejects.toThrow(
                 'Error updating user: Bad Request',
             );
+        });
+    });
+
+    describe('esppLotList', () => {
+        const mockESPPLots = [
+            {
+                grantDate: '2023-01-01',
+                purchaseDate: '2023-06-30',
+                offerStartPrice: 150.0,
+                offerEndPrice: 160.0,
+                purchasePrice: 136.0,
+                shares: 10,
+            },
+            {
+                grantDate: '2023-07-01',
+                purchaseDate: '2023-12-31',
+                offerStartPrice: 160.0,
+                offerEndPrice: 170.0,
+                purchasePrice: 144.5,
+                shares: 12,
+            },
+        ];
+
+        it('should fetch ESPP lots from API when not in cache', async () => {
+            global.fetch = vi.fn().mockResolvedValue({
+                ok: true,
+                json: vi.fn().mockResolvedValue(mockESPPLots),
+            });
+
+            const result = await esppLotList(mockUserId);
+
+            expect(global.fetch).toHaveBeenCalledWith(`${API_HOST}/user/${mockUserId}/espp-lot`);
+            expect(result).toEqual(mockESPPLots);
+
+            const cachedResult = await esppLotList(mockUserId);
+
+            expect(cachedResult).toEqual(mockESPPLots);
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+        });
+
+        it('should handle API errors gracefully', async () => {
+            global.fetch = vi.fn().mockResolvedValue({
+                ok: false,
+                status: 500,
+                statusText: 'Internal Server Error',
+            });
+
+            await expect(esppLotList(mockUserId)).rejects.toThrow();
         });
     });
 });
