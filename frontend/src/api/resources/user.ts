@@ -1,7 +1,6 @@
+import { API_HOST } from '@/api/constants';
 import type { Settings, RawUserSettings, UserSettings } from '@/domain/user/user-settings';
 import { getCachedItem, setCachedItem } from '@/utils/cache';
-
-const API_HOST = 'https://vxzzln3s2i.execute-api.us-east-1.amazonaws.com/prod';
 
 const CACHE_BASE = 'api-resource-user';
 
