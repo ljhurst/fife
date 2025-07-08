@@ -1,7 +1,10 @@
+import { esppLotList } from '@/api/resources/user';
+import type { CurrentUser } from '@/domain/auth/current-user';
 import type { XData } from '@/domain/components/x-data';
 import { ESPP_PURCHASE_REQUIRED_FIELDS } from '@/domain/espp/espp-purchase-raw';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
 import { register } from '@/utils/alpine-components';
+import { getCurrentUser } from '@/utils/auth';
 import { csvToJson } from '@/utils/data';
 import { formatDateYYYYMMDD } from '@/utils/date';
 import {
@@ -16,6 +19,7 @@ import { arrayToCommaSeparatedString } from '@/utils/string';
 
 type PurchaseTableXData = XData<
     {
+        user: CurrentUser | null;
         nkeMarketPrice: string;
         purchases: ESPPPurchaseTaxes[];
         outcomeClasses: Record<ESPPTaxOutcome, string>;
@@ -23,6 +27,7 @@ type PurchaseTableXData = XData<
     {
         formatUSD: typeof formatUSD;
         formatDateYYYYMMDD: typeof formatDateYYYYMMDD;
+        init: () => Promise<void>;
         showTaxConsiderations: () => boolean;
         onFileUpload: (event: CustomEvent) => void;
         onMarketPriceInput: () => void;
@@ -33,6 +38,7 @@ type PurchaseTableXData = XData<
 function purchaseTableXData(): PurchaseTableXData {
     return {
         data: {
+            user: null,
             nkeMarketPrice: '',
             purchases: [],
             outcomeClasses: {
@@ -44,6 +50,18 @@ function purchaseTableXData(): PurchaseTableXData {
         methods: {
             formatUSD,
             formatDateYYYYMMDD,
+            async init(this: PurchaseTableXData): Promise<void> {
+                this.data.user = await getCurrentUser();
+
+                if (!this.data.user) {
+                    console.log('No logged in user');
+                    return;
+                }
+
+                const userLots = await esppLotList(this.data.user.id);
+
+                this.data.purchases = loadESPPPurchasesTaxes(userLots);
+            },
             showTaxConsiderations(this: PurchaseTableXData): boolean {
                 return this.data.purchases.length > 0;
             },
