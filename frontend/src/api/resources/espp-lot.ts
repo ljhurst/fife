@@ -1,8 +1,8 @@
 import { API_HOST, CACHE_BASE_USER_ESPP_LOT } from '@/api/constants';
-import type { ESPPPurchaseRaw } from '@/domain/espp/espp-purchase-raw';
+import { type ESPPPurchaseInput, type ESPPPurchaseRaw } from '@/domain/espp/espp-purchase-raw';
 import { deleteCachedItem, getCacheKey } from '@/utils/cache';
 
-async function create(userId: string, lot: ESPPPurchaseRaw): Promise<ESPPPurchaseRaw> {
+async function create(userId: string, lot: ESPPPurchaseInput): Promise<ESPPPurchaseRaw> {
     const response = await fetch(`${API_HOST}/espp/lot`, {
         method: 'POST',
         headers: {

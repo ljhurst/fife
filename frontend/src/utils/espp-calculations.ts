@@ -7,6 +7,7 @@ const ORDINARY_INCOME_TAX_RATE = 0.24;
 const LONG_TERM_CAPITAL_GAINS_TAX_RATE = 0.15;
 
 interface ESPPPurchase {
+    id?: string;
     grantDate: Date;
     purchaseDate: Date;
     offerStartPrice: number;
@@ -76,6 +77,7 @@ export type { ESPPPurchaseRaw, ESPPPurchaseTaxes };
 
 function _loadESPPPurchases(esppPurchasesRaw: ESPPPurchaseRaw[]): ESPPPurchase[] {
     return esppPurchasesRaw.map((purchase) => ({
+        id: purchase.id,
         grantDate: new Date(purchase.grantDate),
         purchaseDate: new Date(purchase.purchaseDate),
         offerStartPrice: Number(purchase.offerStartPrice),

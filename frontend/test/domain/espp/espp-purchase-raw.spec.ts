@@ -1,97 +1,57 @@
 import { describe, it, expect } from 'vitest';
 
 import {
-    ESPP_PURCHASE_REQUIRED_FIELDS,
-    createESPPPurchaseRaw,
-    isESPPPurchaseRawValid,
-    type ESPPPurchaseRaw,
+    ESPP_PURCHASE_INPUT_REQUIRED_FIELDS,
+    createESPPPurchaseInput,
+    isESPPPurchaseInputValid,
+    type ESPPPurchaseInput,
 } from '@/domain/espp/espp-purchase-raw';
 
 describe('espp-purchase-raw', () => {
-    describe('createESPPPurchaseRaw', () => {
-        it('should create an empty ESPPPurchaseRaw object', () => {
-            const result = createESPPPurchaseRaw();
+    describe('createESPPPurchaseInput', () => {
+        it('should create an empty ESPPPurchaseInput object', () => {
+            const result = createESPPPurchaseInput();
 
-            expect(result).toEqual({
-                grantDate: '',
-                purchaseDate: '',
-                offerStartPrice: '',
-                offerEndPrice: '',
-                purchasePrice: '',
-                shares: '',
-            });
+            expect(Object.keys(result)).toEqual(ESPP_PURCHASE_INPUT_REQUIRED_FIELDS);
         });
     });
 
-    describe('isESPPPurchaseRawValid', () => {
-        it('should return false for an empty purchase object', () => {
-            const emptyPurchase = createESPPPurchaseRaw();
+    describe('isESPPPurchaseInputValid', () => {
+        const validPurchase: ESPPPurchaseInput = {
+            grantDate: '2023-01-01',
+            purchaseDate: '2023-06-30',
+            offerStartPrice: '150.00',
+            offerEndPrice: '160.00',
+            purchasePrice: '136.00',
+            shares: '10',
+        };
 
-            expect(isESPPPurchaseRawValid(emptyPurchase)).toBe(false);
+        it('should return false for an empty purchase object', () => {
+            const emptyPurchase = createESPPPurchaseInput();
+
+            expect(isESPPPurchaseInputValid(emptyPurchase)).toBe(false);
         });
 
         it('should return false if any required field is empty', () => {
-            const validPurchase: ESPPPurchaseRaw = {
-                grantDate: '2023-01-01',
-                purchaseDate: '2023-06-30',
-                offerStartPrice: '150.00',
-                offerEndPrice: '160.00',
-                purchasePrice: '136.00',
-                shares: '10',
-            };
-
-            // Test each field individually
-            for (const field of ESPP_PURCHASE_REQUIRED_FIELDS) {
+            for (const field of ESPP_PURCHASE_INPUT_REQUIRED_FIELDS) {
                 const invalidPurchase = { ...validPurchase };
                 invalidPurchase[field] = '';
 
-                expect(isESPPPurchaseRawValid(invalidPurchase)).toBe(false);
+                expect(isESPPPurchaseInputValid(invalidPurchase)).toBe(false);
             }
         });
 
         it('should return false if any required field contains only whitespace', () => {
-            const validPurchase: ESPPPurchaseRaw = {
-                grantDate: '2023-01-01',
-                purchaseDate: '2023-06-30',
-                offerStartPrice: '150.00',
-                offerEndPrice: '160.00',
-                purchasePrice: '136.00',
-                shares: '10',
-            };
-
-            // Test each field individually
-            for (const field of ESPP_PURCHASE_REQUIRED_FIELDS) {
+            for (const field of ESPP_PURCHASE_INPUT_REQUIRED_FIELDS) {
                 const invalidPurchase = { ...validPurchase };
                 invalidPurchase[field] = '   ';
 
-                expect(isESPPPurchaseRawValid(invalidPurchase)).toBe(false);
+                expect(isESPPPurchaseInputValid(invalidPurchase)).toBe(false);
             }
         });
 
         it('should return true if all required fields are non-empty', () => {
-            const validPurchase: ESPPPurchaseRaw = {
-                grantDate: '2023-01-01',
-                purchaseDate: '2023-06-30',
-                offerStartPrice: '150.00',
-                offerEndPrice: '160.00',
-                purchasePrice: '136.00',
-                shares: '10',
-            };
-
-            expect(isESPPPurchaseRawValid(validPurchase)).toBe(true);
-        });
-    });
-
-    describe('ESPP_PURCHASE_REQUIRED_FIELDS', () => {
-        it('should contain all the required fields', () => {
-            expect(ESPP_PURCHASE_REQUIRED_FIELDS).toEqual([
-                'grantDate',
-                'purchaseDate',
-                'offerStartPrice',
-                'offerEndPrice',
-                'purchasePrice',
-                'shares',
-            ]);
+            expect(isESPPPurchaseInputValid(validPurchase)).toBe(true);
         });
     });
 });

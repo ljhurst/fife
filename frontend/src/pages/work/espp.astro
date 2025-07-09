@@ -168,6 +168,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                         <th>Disqualifying Disposition w/ STCG Taxes</th>
                                         <th>Disqualifying Disposition w/ LTCG Taxes</th>
                                         <th>Qualifying Disposition</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -199,11 +200,8 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                         "
                                     >
                                         <template
-                                            x-for="purchase in methods.sortArrayOfObjectsByKey(
-                                                    data.purchases,
-                                                    'grantDate'
-                                                )"
-                                            :key="purchase.grantDate.toString()"
+                                            x-for="purchase in data.purchases"
+                                            :key="purchase.id"
                                         >
                                             <tr>
                                                 <td
@@ -291,6 +289,62 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                     )
                                                 "
                                                 ></td>
+                                                <td>
+                                                    <div
+                                                        class="dropdown is-right"
+                                                        :class="
+                                                            {
+                                                                'is-active':
+                                                                    purchase.uiState.isActionsOpen
+                                                            }
+                                                        "
+                                                        @click.outside="methods.closeActions"
+                                                    >
+                                                        <div class="dropdown-trigger">
+                                                            <button
+                                                                class="button is-small"
+                                                                aria-haspopup="true"
+                                                                aria-controls="dropdown-menu"
+                                                                @click.stop="
+                                                                    methods.toggleActions
+                                                                "
+                                                                :data-purchase-id="purchase.id"
+                                                            >
+                                                                <span class="icon is-small">
+                                                                    <i class="fas fa-ellipsis-v"
+                                                                    ></i>
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="dropdown-menu" role="menu">
+                                                            <div class="dropdown-content">
+                                                                <a
+                                                                    class="button
+                                                                        is-ghost
+                                                                        dropdown-item
+                                                                        has-text-danger"
+                                                                    :class="
+                                                                        {
+                                                                        'is-loading':
+                                                                        purchase.uiState.isDeleting
+                                                                        }
+                                                                    "
+                                                                    @click.stop="
+                                                                        methods.deleteLot
+                                                                    "
+                                                                    :data-purchase-id="purchase.id"
+                                                                >
+                                                                    <span
+                                                                        class="icon is-small mr-1"
+                                                                    >
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </span>
+                                                                    Delete
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </template>
                                     </template>
@@ -302,6 +356,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
             </div>
         </div>
     </section>
-</BaseLayout>
 
-<script src="./_espp.client.ts"></script>
+    <script src="./_espp.client.ts"></script>
+</BaseLayout>
