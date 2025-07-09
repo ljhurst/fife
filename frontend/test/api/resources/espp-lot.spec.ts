@@ -9,6 +9,7 @@ describe('espp-lot', () => {
     const mockLotId = 'lot-456';
 
     const mockESPPLot: ESPPPurchaseRaw = {
+        id: mockLotId,
         grantDate: '2023-01-01',
         purchaseDate: '2023-06-30',
         offerStartPrice: '150.00',

@@ -10,6 +10,7 @@ import type { ESPPPurchaseTaxes } from '@/utils/espp-calculations';
 
 const MOCK_ESPP_PURCHASES = [
     {
+        id: '1',
         grantDate: '2022-10-01',
         purchaseDate: '2023-03-31',
         offerStartPrice: '83.12',
@@ -18,6 +19,7 @@ const MOCK_ESPP_PURCHASES = [
         shares: '96.5303',
     },
     {
+        id: '2',
         grantDate: '2024-10-01',
         purchaseDate: '2025-03-31',
         offerStartPrice: '89.13',
