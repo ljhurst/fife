@@ -250,7 +250,6 @@ function purchaseTableXData(): PurchaseTableXData {
                 event: PointerEvent,
                 selector: string,
             ): string {
-                console.log('Toggle actions for lot:', event);
                 const eventTarget = event.target as HTMLElement;
                 const button = eventTarget?.closest(selector) as HTMLElement | null;
 
