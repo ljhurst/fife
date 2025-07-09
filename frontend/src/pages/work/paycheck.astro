@@ -1,4 +1,5 @@
 ---
+import DateInput from '@/components/molecules/DateInput/DateInput.astro';
 import NumberInput from '@/components/molecules/NumberInput/NumberInput.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
@@ -26,32 +27,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                             xModel="data.paychecksPerYear"
                             onInput="methods.onPaychecksRemainingInput"
                         />
-                        <div class="field is-horizontal">
-                            <div class="field-label is-normal">
-                                <label class="label">Known Paycheck Date</label>
-                            </div>
-                            <div class="field-body">
-                                <div class="field is-narrow">
-                                    <div class="field has-addons">
-                                        <p class="control">
-                                            <a class="button is-static">
-                                                <span class="icon is-small is-left">
-                                                    <i class="fas fa-calendar-days"></i>
-                                                </span>
-                                            </a>
-                                        </p>
-                                        <p class="control is-expanded date-min-width">
-                                            <input
-                                                class="input has-text-right"
-                                                type="date"
-                                                x-model="data.knownPaycheckDate"
-                                                @input="methods.onPaychecksRemainingInput"
-                                            />
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <DateInput
+                            label="Known Paycheck Date"
+                            xModel="data.knownPaycheckDate"
+                            onInput="methods.onPaychecksRemainingInput"
+                        />
                     </div>
                 </div>
                 <div class="block" x-cloak x-show="methods.showPaychecksRemaining" x-transition>
@@ -72,11 +52,5 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         </div>
     </section>
 </BaseLayout>
-
-<style>
-    .date-min-width {
-        min-width: 200px;
-    }
-</style>
 
 <script src="./_paycheck.client.ts"></script>
