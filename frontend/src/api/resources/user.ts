@@ -1,12 +1,10 @@
-import { API_HOST } from '@/api/constants';
+import { API_HOST, CACHE_BASE_USER, CACHE_BASE_USER_ESPP_LOT } from '@/api/constants';
 import type { Settings, RawUserSettings, UserSettings } from '@/domain/user/user-settings';
 import { getCachedItem, setCachedItem, getCacheKey } from '@/utils/cache';
 import type { ESPPPurchaseRaw } from '@/utils/espp-calculations';
 
-const CACHE_BASE = 'api-resource-user';
-
 async function get(userId: string): Promise<UserSettings> {
-    const cacheKey = getCacheKey([CACHE_BASE, userId]);
+    const cacheKey = getCacheKey([CACHE_BASE_USER, userId]);
     const cachedUser = getCachedItem(cacheKey) as RawUserSettings | null;
 
     if (cachedUser) {
@@ -43,14 +41,14 @@ async function update(userId: string, userSettings: Settings): Promise<UserSetti
 
     const rawUser = await response.json();
 
-    const cacheKey = getCacheKey([CACHE_BASE, userId]);
+    const cacheKey = getCacheKey([CACHE_BASE_USER, userId]);
     setCachedItem(cacheKey, rawUser);
 
     return parseRawUser(rawUser);
 }
 
 async function esppLotList(userId: string): Promise<ESPPPurchaseRaw[]> {
-    const cacheKey = getCacheKey([CACHE_BASE, 'espp-lot', userId]);
+    const cacheKey = getCacheKey([CACHE_BASE_USER_ESPP_LOT, userId]);
     const cachedLots = getCachedItem(cacheKey) as ESPPPurchaseRaw[] | null;
 
     if (cachedLots) {
@@ -58,6 +56,10 @@ async function esppLotList(userId: string): Promise<ESPPPurchaseRaw[]> {
     }
 
     const response = await fetch(`${API_HOST}/user/${userId}/espp-lot`);
+
+    if (!response.ok) {
+        throw new Error(`Error fetching ESPP lots: ${response.statusText}`);
+    }
 
     const rawLots = await response.json();
 

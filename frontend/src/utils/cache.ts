@@ -16,6 +16,10 @@ function setCachedItem(key: string, value: object): void {
     localStorage.setItem(key, JSON.stringify(value));
 }
 
+function deleteCachedItem(key: string): void {
+    localStorage.removeItem(key);
+}
+
 function clearCache(): void {
     for (const key in localStorage) {
         if (key.startsWith(CACHE_PREFIX)) {
@@ -24,4 +28,4 @@ function clearCache(): void {
     }
 }
 
-export { getCacheKey, getCachedItem, setCachedItem, clearCache };
+export { getCacheKey, getCachedItem, setCachedItem, deleteCachedItem, clearCache };
