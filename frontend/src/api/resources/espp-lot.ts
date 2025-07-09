@@ -3,7 +3,6 @@ import type { ESPPPurchaseRaw } from '@/domain/espp/espp-purchase-raw';
 import { deleteCachedItem, getCacheKey } from '@/utils/cache';
 
 async function create(userId: string, lot: ESPPPurchaseRaw): Promise<ESPPPurchaseRaw> {
-    console.log({ ...lot, userId });
     const response = await fetch(`${API_HOST}/espp/lot`, {
         method: 'POST',
         headers: {
