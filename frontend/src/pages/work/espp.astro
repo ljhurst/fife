@@ -38,7 +38,94 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                 <div class="block" x-cloak x-show="data.user" x-transition>
                     <div class="box">
                         <h2 class="title is-2">Upload an ESPP Lot</h2>
-                        <div class="block">Test</div>
+                        <div class="block">
+                            <button class="button is-primary" @click="methods.openNewLotModal">
+                                <span class="icon">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                <span>Add ESPP Lot</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESPP Lot Modal -->
+                <div class="modal" :class="{ 'is-active': data.isNewLotModalActive }">
+                    <div class="modal-background" @click="methods.closeNewLotModal"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Add ESPP Lot</p>
+                            <button
+                                class="delete"
+                                aria-label="close"
+                                @click="methods.closeNewLotModal"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <div class="field">
+                                <label class="label">Grant Date</label>
+                                <div class="control">
+                                    <input
+                                        class="input"
+                                        type="date"
+                                        x-model="data.newESPPLot.grantDate"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Purchase Date</label>
+                                <div class="control">
+                                    <input
+                                        class="input"
+                                        type="date"
+                                        x-model="data.newESPPLot.purchaseDate"
+                                    />
+                                </div>
+                            </div>
+
+                            <NumberInput
+                                label="Offer Start Price"
+                                addOnIcon="fa-dollar-sign"
+                                xModel="data.newESPPLot.offerStartPrice"
+                                onInput="methods.onNewLotInput"
+                            />
+
+                            <NumberInput
+                                label="Offer End Price"
+                                addOnIcon="fa-dollar-sign"
+                                xModel="data.newESPPLot.offerEndPrice"
+                                onInput="methods.onNewLotInput"
+                            />
+
+                            <NumberInput
+                                label="Purchase Price"
+                                addOnIcon="fa-dollar-sign"
+                                xModel="data.newESPPLot.purchasePrice"
+                                onInput="methods.onNewLotInput"
+                            />
+
+                            <NumberInput
+                                label="Shares"
+                                addOnIcon="fa-hashtag"
+                                xModel="data.newESPPLot.shares"
+                                onInput="methods.onNewLotInput"
+                            />
+                        </section>
+                        <footer class="modal-card-foot">
+                            <div class="buttons">
+                                <button
+                                    class="button is-success"
+                                    :class="{ 'is-loading': data.isSavingNewLot }"
+                                    :disabled="!data.canSaveNewLot"
+                                    @click="methods.saveNewLot"
+                                >
+                                    Save
+                                </button>
+                                <button class="button" @click="methods.closeNewLotModal">
+                                    Cancel
+                                </button>
+                            </div>
+                        </footer>
                     </div>
                 </div>
 
@@ -95,7 +182,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                 </thead>
                                 <tbody>
                                     <template
-                                        x-for="purchase in data.purchases"
+                                        x-for="purchase in methods.sortArrayOfObjectsByKey(
+                                            data.purchases,
+                                            'grantDate'
+                                        )"
                                         :key="purchase.grantDate.toString()"
                                     >
                                         <tr>
