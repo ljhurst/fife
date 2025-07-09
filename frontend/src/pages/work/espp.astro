@@ -180,85 +180,128 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <template x-if="data.isLoadingESPPLots">
+                                        <tr>
+                                            <td colspan="11">
+                                                <progress class="progress is-primary">
+                                                    Loading...
+                                                </progress>
+                                            </td>
+                                        </tr>
+                                    </template>
                                     <template
-                                        x-for="purchase in methods.sortArrayOfObjectsByKey(
-                                            data.purchases,
-                                            'grantDate'
-                                        )"
-                                        :key="purchase.grantDate.toString()"
+                                        x-if="
+                                            !data.isLoadingESPPLots && data.purchases.length === 0
+                                        "
                                     >
                                         <tr>
-                                            <td
-                                                x-text="
-                                                    methods.formatDateYYYYMMDD(purchase.grantDate)
-                                                "
-                                            ></td>
-                                            <td
-                                                x-text="
-                                                methods.formatDateYYYYMMDD(purchase.purchaseDate)
-                                            "
-                                            ></td>
-                                            <td
-                                                class="has-text-right"
-                                                x-text="methods.formatUSD(purchase.offerStartPrice)"
-                                            ></td>
-                                            <td
-                                                class="has-text-right"
-                                                x-text="methods.formatUSD(purchase.offerEndPrice)"
-                                            ></td>
-                                            <td
-                                                class="has-text-right"
-                                                x-text="methods.formatUSD(purchase.purchasePrice)"
-                                            ></td>
-                                            <td class="has-text-right" x-text="purchase.shares"
-                                            ></td>
-                                            <td
-                                                class="has-text-right"
-                                                x-text="methods.formatUSD(purchase.discountAmount)"
-                                            ></td>
-                                            <td
-                                                class="has-text-right"
-                                                x-text="methods.formatUSD(purchase.gain)"></td>
-                                            <td
-                                                class="has-text-right"
-                                                :class="
-                                            data.outcomeClasses[
-                                                purchase.dispositions?.disqualifyingSTCG.outcome
-                                            ]
-                                        "
-                                                x-text="
-                                        methods.formatUSD(
-                                            purchase.dispositions?.disqualifyingSTCG.taxes
-                                        )
-                                    "
-                                            ></td>
-                                            <td
-                                                class="has-text-right"
-                                                :class="
-                                            data.outcomeClasses[
-                                                purchase.dispositions?.disqualifyingLTCG.outcome
-                                            ]
-                                        "
-                                                x-text="
-                                        methods.formatUSD(
-                                            purchase.dispositions?.disqualifyingLTCG.taxes
-                                        )
-                                    "
-                                            ></td>
-                                            <td
-                                                class="has-text-right"
-                                                :class="
-                                            data.outcomeClasses[
-                                                purchase.dispositions?.qualifying.outcome
-                                            ]
-                                        "
-                                                x-text="
-                                            methods.formatUSD(
-                                                purchase.dispositions?.qualifying.taxes
-                                            )
-                                        "
-                                            ></td>
+                                            <td colspan="11">
+                                                <div class="has-text-centered">
+                                                    No ESPP purchases found.
+                                                </div>
+                                            </td>
                                         </tr>
+                                    </template>
+                                    <template
+                                        x-if="
+                                            !data.isLoadingESPPLots && data.purchases.length !== 0
+                                        "
+                                    >
+                                        <template
+                                            x-for="purchase in methods.sortArrayOfObjectsByKey(
+                                                    data.purchases,
+                                                    'grantDate'
+                                                )"
+                                            :key="purchase.grantDate.toString()"
+                                        >
+                                            <tr>
+                                                <td
+                                                    x-text="
+                                                        methods.formatDateYYYYMMDD(
+                                                            purchase.grantDate
+                                                        )
+                                                    "
+                                                ></td>
+                                                <td
+                                                    x-text="
+                                                        methods.formatDateYYYYMMDD(
+                                                            purchase.purchaseDate
+                                                        )
+                                                    "
+                                                ></td>
+                                                <td
+                                                    class="has-text-right"
+                                                    x-text="
+                                                        methods.formatUSD(purchase.offerStartPrice)
+                                                    "
+                                                ></td>
+                                                <td
+                                                    class="has-text-right"
+                                                    x-text="
+                                                        methods.formatUSD(purchase.offerEndPrice)
+                                                    "
+                                                ></td>
+                                                <td
+                                                    class="has-text-right"
+                                                    x-text="
+                                                        methods.formatUSD(purchase.purchasePrice)
+                                                    "
+                                                ></td>
+                                                <td class="has-text-right" x-text="purchase.shares"
+                                                ></td>
+                                                <td
+                                                    class="has-text-right"
+                                                    x-text="
+                                                        methods.formatUSD(purchase.discountAmount)
+                                                    "
+                                                ></td>
+                                                <td
+                                                    class="has-text-right"
+                                                    x-text="
+                                                        methods.formatUSD(purchase.gain)
+                                                    "
+                                                ></td>
+                                                <td
+                                                    class="has-text-right"
+                                                    :class="
+                                                data.outcomeClasses[
+                                                    purchase.dispositions?.disqualifyingSTCG.outcome
+                                                ]
+                                            "
+                                                    x-text="
+                                                methods.formatUSD(
+                                                    purchase.dispositions?.disqualifyingSTCG.taxes
+                                                )
+                                            "
+                                                ></td>
+                                                <td
+                                                    class="has-text-right"
+                                                    :class="
+                                                data.outcomeClasses[
+                                                    purchase.dispositions?.disqualifyingLTCG.outcome
+                                                ]
+                                            "
+                                                    x-text="
+                                                methods.formatUSD(
+                                                    purchase.dispositions?.disqualifyingLTCG.taxes
+                                                )
+                                            "
+                                                ></td>
+                                                <td
+                                                    class="has-text-right"
+                                                    :class="
+                                                    data.outcomeClasses[
+                                                        purchase.dispositions?.qualifying.outcome
+                                                    ]
+                                                "
+                                                    x-text="
+                                                    methods.formatUSD(
+                                                        purchase.dispositions?.qualifying.taxes
+                                                    )
+                                                "
+                                                ></td>
+                                            </tr>
+                                        </template>
                                     </template>
                                 </tbody>
                             </table>
