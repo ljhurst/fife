@@ -34,6 +34,7 @@ type PurchaseTableXData = XData<
         newESPPLot: ESPPPurchaseRaw;
         canSaveNewLot: boolean;
         isSavingNewLot: boolean;
+        isLoadingESPPLots: boolean;
     },
     {
         formatUSD: typeof formatUSD;
@@ -66,6 +67,7 @@ function purchaseTableXData(): PurchaseTableXData {
             newESPPLot: createESPPPurchaseRaw(),
             canSaveNewLot: false,
             isSavingNewLot: false,
+            isLoadingESPPLots: false,
         },
         methods: {
             formatUSD,
@@ -79,12 +81,19 @@ function purchaseTableXData(): PurchaseTableXData {
                     return;
                 }
 
-                const userLots = await esppLotList(this.data.user.id);
+                try {
+                    this.data.isLoadingESPPLots = true;
+                    const userLots = await esppLotList(this.data.user.id);
 
-                this.data.purchases = loadESPPPurchasesTaxes(userLots);
+                    this.data.purchases = loadESPPPurchasesTaxes(userLots);
+                } catch (error) {
+                    console.error('Error fetching ESPP lots:', error);
+                } finally {
+                    this.data.isLoadingESPPLots = false;
+                }
             },
             showTaxConsiderations(this: PurchaseTableXData): boolean {
-                return this.data.purchases.length > 0;
+                return !!this.data.user || this.data.purchases.length > 0;
             },
             async onFileUpload(this: PurchaseTableXData, event: CustomEvent): Promise<void> {
                 if (!event.detail) {
@@ -145,8 +154,8 @@ function purchaseTableXData(): PurchaseTableXData {
                     this.methods.closeNewLotModal.bind(this)();
                 } catch (error) {
                     console.error('Error creating new ESPP lot:', error);
+                } finally {
                     this.data.isSavingNewLot = false;
-                    return;
                 }
             },
         },
