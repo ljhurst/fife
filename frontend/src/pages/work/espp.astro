@@ -164,7 +164,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                         <th>Purchase Price</th>
                                         <th>Shares</th>
                                         <th>Discount Amount</th>
-                                        <th>Current Gain/Loss</th>
+                                        <th>Total Gain/Loss</th>
                                         <th>Disqualifying Disposition w/ STCG Taxes</th>
                                         <th>Disqualifying Disposition w/ LTCG Taxes</th>
                                         <th>Qualifying Disposition</th>
@@ -200,7 +200,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                         "
                                     >
                                         <template
-                                            x-for="purchase in data.purchases"
+                                            x-for="(purchase, index) in data.purchases"
                                             :key="purchase.id"
                                         >
                                             <tr>
@@ -247,7 +247,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                 <td
                                                     class="has-text-right"
                                                     x-text="
-                                                        methods.formatUSD(purchase.gain)
+                                                        methods.formatUSD(purchase.totalGain)
                                                     "
                                                 ></td>
                                                 <td
@@ -289,11 +289,16 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                     )
                                                 "
                                                 ></td>
-                                                <td>
+                                                <td class="has-text-centered is-vcentered">
                                                     <div
                                                         class="dropdown is-right"
                                                         :class="
                                                             {
+                                                                'is-up':
+                                                                    methods.isLastElement(
+                                                                        data.purchases,
+                                                                        index
+                                                                    ),
                                                                 'is-active':
                                                                     purchase.uiState.isActionsOpen
                                                             }
