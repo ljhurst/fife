@@ -31,7 +31,8 @@ interface ESPPDispositions {
 interface ESPPPurchaseTaxes extends ESPPPurchase {
     purchaseMarketPrice: number;
     discountAmount: number;
-    gain?: number;
+    marketGain?: number;
+    totalGain?: number;
     dispositions?: ESPPDispositions;
 }
 
@@ -43,7 +44,8 @@ function loadESPPPurchasesTaxes(esppPurchasesRaw: ESPPPurchaseRaw[]): ESPPPurcha
 
 function updateMarketDependentValues(purchases: ESPPPurchaseTaxes[], marketPrice: number): void {
     purchases.forEach((purchase) => {
-        purchase.gain = _calculateGain(purchase.offerEndPrice, marketPrice, purchase.shares);
+        purchase.marketGain = _calculateGain(purchase.offerEndPrice, marketPrice, purchase.shares);
+        purchase.totalGain = purchase.discountAmount + purchase.marketGain;
 
         const disqualifyingDispositionSTCG = _createDisqualifyingDispositionSTCG(
             purchase,
@@ -67,7 +69,8 @@ function updateMarketDependentValues(purchases: ESPPPurchaseTaxes[], marketPrice
 
 function clearMarketDependentValues(purchases: ESPPPurchaseTaxes[]): void {
     purchases.forEach((purchase) => {
-        delete purchase.gain;
+        delete purchase.marketGain;
+        delete purchase.totalGain;
         delete purchase.dispositions;
     });
 }
@@ -139,12 +142,12 @@ function _createDisqualifyingDispositionSTCG(
 }
 
 function _calculateDisqualifyingDispositionSTCGTaxes(purchase: ESPPPurchaseTaxes): number {
-    const gain = _guardGain(purchase.gain);
+    const marketGain = _guardMarketGain(purchase.marketGain);
 
     const discountTaxes = purchase.discountAmount * ORDINARY_INCOME_TAX_RATE;
-    const gainTaxes = gain * ORDINARY_INCOME_TAX_RATE;
+    const marketGainTaxes = marketGain * ORDINARY_INCOME_TAX_RATE;
 
-    return discountTaxes + gainTaxes;
+    return discountTaxes + marketGainTaxes;
 }
 
 function _calculateDisqualifyingDispositionSTCGOutcome(
@@ -188,20 +191,20 @@ function _createDisqualifyingDispositionLTCG(
 }
 
 function _calculateDisqualifyingDispositionLTCGTaxes(purchase: ESPPPurchaseTaxes): number {
-    const gain = _guardGain(purchase.gain);
+    const marketGain = _guardMarketGain(purchase.marketGain);
 
-    let gainTaxes = 0;
+    let marketGainTaxes = 0;
     let discountAmount = purchase.discountAmount;
 
-    if (gain < 0) {
-        discountAmount = purchase.discountAmount + gain;
+    if (marketGain < 0) {
+        discountAmount = purchase.discountAmount + marketGain;
     } else {
-        gainTaxes = gain * LONG_TERM_CAPITAL_GAINS_TAX_RATE;
+        marketGainTaxes = marketGain * LONG_TERM_CAPITAL_GAINS_TAX_RATE;
     }
 
     const discountTaxes = discountAmount * ORDINARY_INCOME_TAX_RATE;
 
-    return discountTaxes + gainTaxes;
+    return discountTaxes + marketGainTaxes;
 }
 
 function _calculateDisqualifyingDispositionLTCGOutcome(
@@ -269,12 +272,12 @@ function _calculateQualifyingDispositionOutcome(
     return ESPPTaxOutcome.BEST;
 }
 
-function _guardGain(gain: number | undefined): number {
-    if (gain === undefined) {
+function _guardMarketGain(marketGain: number | undefined): number {
+    if (marketGain === undefined) {
         return NaN;
     }
 
-    return gain;
+    return marketGain;
 }
 
 function _calculateLongTermGainsDate(purchaseDate: Date): Date {

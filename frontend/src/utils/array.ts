@@ -10,4 +10,8 @@ function sortArrayOfObjectsByKey<T extends Record<string, unknown>>(arr: T[], ke
     });
 }
 
-export { sortArrayOfObjectsByKey };
+function isLastElement<T>(arr: T[], index: number): boolean {
+    return index === arr.length - 1;
+}
+
+export { sortArrayOfObjectsByKey, isLastElement };

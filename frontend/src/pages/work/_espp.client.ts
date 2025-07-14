@@ -11,7 +11,7 @@ import {
 } from '@/domain/espp/espp-purchase-raw';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
 import { register } from '@/utils/alpine-components';
-import { sortArrayOfObjectsByKey } from '@/utils/array';
+import { sortArrayOfObjectsByKey, isLastElement } from '@/utils/array';
 import { getCurrentUser } from '@/utils/auth';
 import { csvToJson } from '@/utils/data';
 import { formatDateYYYYMMDD } from '@/utils/date';
@@ -50,6 +50,7 @@ type PurchaseTableXData = XData<
         formatUSD: typeof formatUSD;
         formatDateYYYYMMDD: typeof formatDateYYYYMMDD;
         sortArrayOfObjectsByKey: typeof sortArrayOfObjectsByKey;
+        isLastElement: typeof isLastElement;
         init: () => Promise<void>;
         showTaxConsiderations: () => boolean;
         onFileUpload: (event: CustomEvent) => void;
@@ -89,6 +90,7 @@ function purchaseTableXData(): PurchaseTableXData {
             formatUSD,
             formatDateYYYYMMDD,
             sortArrayOfObjectsByKey,
+            isLastElement,
             async init(this: PurchaseTableXData): Promise<void> {
                 this.data.user = await getCurrentUser();
 
