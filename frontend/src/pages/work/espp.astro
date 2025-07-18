@@ -1,4 +1,5 @@
 ---
+import CellDetails from '@/components/molecules/CellDetails/CellDetails.astro';
 import DateInput from '@/components/molecules/DateInput/DateInput.astro';
 import FileUpload from '@/components/molecules/FileUpload/FileUpload.astro';
 import NumberInput from '@/components/molecules/NumberInput/NumberInput.astro';
@@ -163,7 +164,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                         <th>Offer End Price</th>
                                         <th>Purchase Price</th>
                                         <th>Shares</th>
-                                        <th>Discount Amount</th>
                                         <th>Total Gain/Loss</th>
                                         <th>Disqualifying Disposition w/ STCG Taxes</th>
                                         <th>Disqualifying Disposition w/ LTCG Taxes</th>
@@ -174,7 +174,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                 <tbody>
                                     <template x-if="data.isLoadingESPPLots">
                                         <tr>
-                                            <td colspan="11">
+                                            <td colspan="10">
                                                 <progress class="progress is-primary">
                                                     Loading...
                                                 </progress>
@@ -183,11 +183,12 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                     </template>
                                     <template
                                         x-if="
-                                            !data.isLoadingESPPLots && data.purchases.length === 0
+                                            !data.isLoadingESPPLots
+                                            && data.displayPurchases.length === 0
                                         "
                                     >
                                         <tr>
-                                            <td colspan="11">
+                                            <td colspan="10">
                                                 <div class="has-text-centered">
                                                     No ESPP purchases found.
                                                 </div>
@@ -196,60 +197,42 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                     </template>
                                     <template
                                         x-if="
-                                            !data.isLoadingESPPLots && data.purchases.length !== 0
+                                            !data.isLoadingESPPLots
+                                            && data.displayPurchases.length !== 0
                                         "
                                     >
                                         <template
-                                            x-for="(purchase, index) in data.purchases"
+                                            x-for="(purchase, index) in data.displayPurchases"
                                             :key="purchase.id"
                                         >
                                             <tr>
-                                                <td
-                                                    x-text="
-                                                        methods.formatDateYYYYMMDD(
-                                                            purchase.grantDate
-                                                        )
-                                                    "
-                                                ></td>
-                                                <td
-                                                    x-text="
-                                                        methods.formatDateYYYYMMDD(
-                                                            purchase.purchaseDate
-                                                        )
-                                                    "
-                                                ></td>
+                                                <td x-text="purchase.grantDate"></td>
+                                                <td x-text="purchase.purchaseDate"></td>
                                                 <td
                                                     class="has-text-right"
-                                                    x-text="
-                                                        methods.formatUSD(purchase.offerStartPrice)
-                                                    "
-                                                ></td>
+                                                    x-text="purchase.offerStartPrice"></td>
                                                 <td
                                                     class="has-text-right"
-                                                    x-text="
-                                                        methods.formatUSD(purchase.offerEndPrice)
-                                                    "
-                                                ></td>
+                                                    x-text="purchase.offerEndPrice"></td>
                                                 <td
                                                     class="has-text-right"
-                                                    x-text="
-                                                        methods.formatUSD(purchase.purchasePrice)
-                                                    "
-                                                ></td>
+                                                    x-text="purchase.purchasePrice"></td>
                                                 <td class="has-text-right" x-text="purchase.shares"
                                                 ></td>
-                                                <td
-                                                    class="has-text-right"
-                                                    x-text="
-                                                        methods.formatUSD(purchase.discountAmount)
-                                                    "
-                                                ></td>
-                                                <td
-                                                    class="has-text-right"
-                                                    x-text="
-                                                        methods.formatUSD(purchase.totalGain)
-                                                    "
-                                                ></td>
+                                                <td class="has-text-right">
+                                                    <span x-text="purchase.gains.total"></span>
+                                                    <div
+                                                        x-show="
+                                                            purchase.uiState.isDetailsOpen
+                                                            && purchase.gains.total
+                                                        "
+                                                    >
+                                                        <CellDetails
+                                                            lineItemsXFor="purchase.gains.details"
+                                                            totalXText="purchase.gains.total"
+                                                        />
+                                                    </div>
+                                                </td>
                                                 <td
                                                     class="has-text-right"
                                                     :class="
@@ -257,12 +240,26 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                     purchase.dispositions?.disqualifyingSTCG.outcome
                                                 ]
                                             "
-                                                    x-text="
-                                                methods.formatUSD(
-                                                    purchase.dispositions?.disqualifyingSTCG.taxes
-                                                )
-                                            "
-                                                ></td>
+                                                >
+                                                    <span
+                                                        x-text="
+                                                purchase.dispositions?.disqualifyingSTCG.taxes.total
+                                                        "
+                                                    ></span>
+                                                    {/* eslint-disable max-len */}
+                                                    <div
+                                                        x-show="
+                                                            purchase.uiState.isDetailsOpen
+                                                            && purchase.dispositions?.disqualifyingSTCG.taxes.total
+                                                        "
+                                                    >
+                                                        <CellDetails
+                                                            lineItemsXFor="purchase.dispositions?.disqualifyingSTCG.taxes.details"
+                                                            totalXText="purchase.dispositions?.disqualifyingSTCG.taxes.total"
+                                                        />
+                                                    </div>
+                                                    {/* eslint-enable max-len */}
+                                                </td>
                                                 <td
                                                     class="has-text-right"
                                                     :class="
@@ -270,12 +267,26 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                     purchase.dispositions?.disqualifyingLTCG.outcome
                                                 ]
                                             "
-                                                    x-text="
-                                                methods.formatUSD(
-                                                    purchase.dispositions?.disqualifyingLTCG.taxes
-                                                )
-                                            "
-                                                ></td>
+                                                >
+                                                    <span
+                                                        x-text="
+                                                purchase.dispositions?.disqualifyingLTCG.taxes.total
+                                                        "
+                                                    ></span>
+                                                    {/* eslint-disable max-len */}
+                                                    <div
+                                                        x-show="
+                                                            purchase.uiState.isDetailsOpen
+                                                            && purchase.dispositions?.disqualifyingLTCG.taxes.total
+                                                        "
+                                                    >
+                                                        <CellDetails
+                                                            lineItemsXFor="purchase.dispositions?.disqualifyingLTCG.taxes.details"
+                                                            totalXText="purchase.dispositions?.disqualifyingLTCG.taxes.total"
+                                                        />
+                                                    </div>
+                                                    {/* eslint-enable max-len */}
+                                                </td>
                                                 <td
                                                     class="has-text-right"
                                                     :class="
@@ -283,12 +294,26 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                         purchase.dispositions?.qualifying.outcome
                                                     ]
                                                 "
-                                                    x-text="
-                                                    methods.formatUSD(
-                                                        purchase.dispositions?.qualifying.taxes
-                                                    )
-                                                "
-                                                ></td>
+                                                >
+                                                    <span
+                                                        x-text="
+                                                    purchase.dispositions?.qualifying.taxes.total
+                                                        "
+                                                    ></span>
+                                                    {/* eslint-disable max-len */}
+                                                    <div
+                                                        x-show="
+                                                            purchase.uiState.isDetailsOpen
+                                                            && purchase.dispositions?.qualifying.taxes.total
+                                                        "
+                                                    >
+                                                        <CellDetails
+                                                            lineItemsXFor="purchase.dispositions?.qualifying.taxes.details"
+                                                            totalXText="purchase.dispositions?.qualifying.taxes.total"
+                                                        />
+                                                    </div>
+                                                    {/* eslint-enable max-len */}
+                                                </td>
                                                 <td class="has-text-centered is-vcentered">
                                                     <div
                                                         class="dropdown is-right"
@@ -296,7 +321,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                             {
                                                                 'is-up':
                                                                     methods.isLastElement(
-                                                                        data.purchases,
+                                                                        data.displayPurchases,
                                                                         index
                                                                     ),
                                                                 'is-active':
@@ -324,9 +349,28 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                         <div class="dropdown-menu" role="menu">
                                                             <div class="dropdown-content">
                                                                 <a
-                                                                    class="button
-                                                                        is-ghost
-                                                                        dropdown-item
+                                                                    class="has-text-info
+                                                                        dropdown-item"
+                                                                    @click.stop="
+                                                                        methods.toggleDetails
+                                                                    "
+                                                                    :data-purchase-id="
+                                                                            purchase.id
+                                                                        "
+                                                                >
+                                                                    <span
+                                                                        class="icon
+                                                                                is-small mr-1"
+                                                                    >
+                                                                        <i
+                                                                            class="fas
+                                                                                fa-info-circle"
+                                                                        ></i>
+                                                                    </span>
+                                                                    Details
+                                                                </a>
+                                                                <a
+                                                                    class="dropdown-item
                                                                         has-text-danger"
                                                                     :class="
                                                                         {
@@ -337,10 +381,13 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                                     @click.stop="
                                                                         methods.deleteLot
                                                                     "
-                                                                    :data-purchase-id="purchase.id"
+                                                                    :data-purchase-id="
+                                                                            purchase.id
+                                                                        "
                                                                 >
                                                                     <span
-                                                                        class="icon is-small mr-1"
+                                                                        class="icon
+                                                                                is-small mr-1"
                                                                     >
                                                                         <i class="fas fa-trash"></i>
                                                                     </span>

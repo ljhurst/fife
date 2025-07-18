@@ -1,0 +1,27 @@
+---
+interface Props {
+    lineItemsXFor: Array<{
+        label: string;
+        amount: number;
+    }>;
+    totalXText: string;
+}
+
+const { lineItemsXFor, totalXText } = Astro.props;
+---
+
+<div
+    class="has-background-primary-dark has-text-primary-dark-invert p-2 is-size-7 has-text-right"
+    style="border-radius: 4px; white-space: nowrap;"
+>
+    <template x-for={`item in ${lineItemsXFor}`}>
+        <div>
+            <span x-text="`${item.label}:`"></span>
+            <span class="ml-2" x-text="item.amount"></span>
+        </div>
+    </template>
+    <div class="mt-2 pt-2" style="border-top: 1px dashed;">
+        <span class="has-text-weight-bold">Total:</span>
+        <span class="ml-2 has-text-weight-bold" x-text={totalXText}></span>
+    </div>
+</div>

@@ -59,15 +59,21 @@ describe('espp-calculations', () => {
                 expect(testPurchase.purchaseMarketPrice).toBe(testPurchase.offerStartPrice);
                 expect(testPurchase.discountAmount).toBeCloseTo(4773.42, 2);
                 expect(testPurchase.marketGain).toBe(0);
-                expect(testPurchase.dispositions.disqualifyingSTCG.taxes).toBeCloseTo(1145.62, 2);
+                expect(testPurchase.dispositions.disqualifyingSTCG.taxes.total).toBeCloseTo(
+                    1145.62,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingSTCG.outcome).toBe(
                     ESPPTaxOutcome.BETTER,
                 );
-                expect(testPurchase.dispositions.disqualifyingLTCG.taxes).toBeCloseTo(1145.62, 2);
+                expect(testPurchase.dispositions.disqualifyingLTCG.taxes.total).toBeCloseTo(
+                    1145.62,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingLTCG.outcome).toBe(
                     ESPPTaxOutcome.BETTER,
                 );
-                expect(testPurchase.dispositions.qualifying.taxes).toBeCloseTo(824.33, 2);
+                expect(testPurchase.dispositions.qualifying.taxes.total).toBeCloseTo(824.33, 2);
                 expect(testPurchase.dispositions.qualifying.outcome).toBe(ESPPTaxOutcome.BEST);
             },
         );
@@ -90,15 +96,21 @@ describe('espp-calculations', () => {
                 expect(testPurchase.purchaseMarketPrice).toBe(testPurchase.offerStartPrice);
                 expect(testPurchase.discountAmount).toBeCloseTo(4773.42, 2);
                 expect(testPurchase.marketGain).toBeCloseTo(482.65, 2);
-                expect(testPurchase.dispositions.disqualifyingSTCG.taxes).toBeCloseTo(1261.46, 2);
+                expect(testPurchase.dispositions.disqualifyingSTCG.taxes.total).toBeCloseTo(
+                    1261.46,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingSTCG.outcome).toBe(
                     ESPPTaxOutcome.GOOD,
                 );
-                expect(testPurchase.dispositions.disqualifyingLTCG.taxes).toBeCloseTo(1218.02, 2);
+                expect(testPurchase.dispositions.disqualifyingLTCG.taxes.total).toBeCloseTo(
+                    1218.02,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingLTCG.outcome).toBe(
                     ESPPTaxOutcome.BETTER,
                 );
-                expect(testPurchase.dispositions.qualifying.taxes).toBeCloseTo(896.73, 2);
+                expect(testPurchase.dispositions.qualifying.taxes.total).toBeCloseTo(896.73, 2);
                 expect(testPurchase.dispositions.qualifying.outcome).toBe(ESPPTaxOutcome.BEST);
             },
         );
@@ -121,15 +133,21 @@ describe('espp-calculations', () => {
                 expect(testPurchase.purchaseMarketPrice).toBe(testPurchase.offerStartPrice);
                 expect(testPurchase.discountAmount).toBeCloseTo(4773.42, 2);
                 expect(testPurchase.marketGain).toBeCloseTo(-965.3, 2);
-                expect(testPurchase.dispositions.disqualifyingSTCG.taxes).toBeCloseTo(913.95, 2);
+                expect(testPurchase.dispositions.disqualifyingSTCG.taxes.total).toBeCloseTo(
+                    913.95,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingSTCG.outcome).toBe(
                     ESPPTaxOutcome.BETTER,
                 );
-                expect(testPurchase.dispositions.disqualifyingLTCG.taxes).toBeCloseTo(913.95, 2);
+                expect(testPurchase.dispositions.disqualifyingLTCG.taxes.total).toBeCloseTo(
+                    913.95,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingLTCG.outcome).toBe(
                     ESPPTaxOutcome.BETTER,
                 );
-                expect(testPurchase.dispositions.qualifying.taxes).toBeCloseTo(679.54, 2);
+                expect(testPurchase.dispositions.qualifying.taxes.total).toBeCloseTo(679.54, 2);
                 expect(testPurchase.dispositions.qualifying.outcome).toBe(ESPPTaxOutcome.BEST);
             },
         );
@@ -152,15 +170,21 @@ describe('espp-calculations', () => {
                 expect(testPurchase.purchaseMarketPrice).toBe(marketPrice);
                 expect(testPurchase.discountAmount).toBeCloseTo(1426.57, 2);
                 expect(testPurchase.marketGain).toBe(0);
-                expect(testPurchase.dispositions.disqualifyingSTCG.taxes).toBeCloseTo(342.38, 2);
+                expect(testPurchase.dispositions.disqualifyingSTCG.taxes.total).toBeCloseTo(
+                    342.38,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingSTCG.outcome).toBe(
                     ESPPTaxOutcome.BEST,
                 );
-                expect(testPurchase.dispositions.disqualifyingLTCG.taxes).toBeCloseTo(342.38, 2);
+                expect(testPurchase.dispositions.disqualifyingLTCG.taxes.total).toBeCloseTo(
+                    342.38,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingLTCG.outcome).toBe(
                     ESPPTaxOutcome.BEST,
                 );
-                expect(testPurchase.dispositions.qualifying.taxes).toBeCloseTo(342.38, 2);
+                expect(testPurchase.dispositions.qualifying.taxes.total).toBeCloseTo(342.38, 2);
                 expect(testPurchase.dispositions.qualifying.outcome).toBe(ESPPTaxOutcome.BEST);
             },
         );
@@ -183,15 +207,21 @@ describe('espp-calculations', () => {
                 expect(testPurchase.purchaseMarketPrice).toBe(testPurchase.offerEndPrice);
                 expect(testPurchase.discountAmount).toBeCloseTo(1426.57, 2);
                 expect(testPurchase.marketGain).toBeCloseTo(977.02, 2);
-                expect(testPurchase.dispositions.disqualifyingSTCG.taxes).toBeCloseTo(576.86, 2);
+                expect(testPurchase.dispositions.disqualifyingSTCG.taxes.total).toBeCloseTo(
+                    576.86,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingSTCG.outcome).toBe(
                     ESPPTaxOutcome.GOOD,
                 );
-                expect(testPurchase.dispositions.disqualifyingLTCG.taxes).toBeCloseTo(488.93, 2);
+                expect(testPurchase.dispositions.disqualifyingLTCG.taxes.total).toBeCloseTo(
+                    488.93,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingLTCG.outcome).toBe(
                     ESPPTaxOutcome.BEST,
                 );
-                expect(testPurchase.dispositions.qualifying.taxes).toBeCloseTo(540.85, 2);
+                expect(testPurchase.dispositions.qualifying.taxes.total).toBeCloseTo(540.85, 2);
                 expect(testPurchase.dispositions.qualifying.outcome).toBe(ESPPTaxOutcome.BETTER);
             },
         );
@@ -214,15 +244,21 @@ describe('espp-calculations', () => {
                 expect(testPurchase.purchaseMarketPrice).toBe(testPurchase.offerEndPrice);
                 expect(testPurchase.discountAmount).toBeCloseTo(1426.57, 2);
                 expect(testPurchase.marketGain).toBeCloseTo(-749.25, 2);
-                expect(testPurchase.dispositions.disqualifyingSTCG.taxes).toBeCloseTo(162.56, 2);
+                expect(testPurchase.dispositions.disqualifyingSTCG.taxes.total).toBeCloseTo(
+                    162.56,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingSTCG.outcome).toBe(
                     ESPPTaxOutcome.BEST,
                 );
-                expect(testPurchase.dispositions.disqualifyingLTCG.taxes).toBeCloseTo(162.56, 2);
+                expect(testPurchase.dispositions.disqualifyingLTCG.taxes.total).toBeCloseTo(
+                    162.56,
+                    2,
+                );
                 expect(testPurchase.dispositions.disqualifyingLTCG.outcome).toBe(
                     ESPPTaxOutcome.BEST,
                 );
-                expect(testPurchase.dispositions.qualifying.taxes).toBeCloseTo(162.56, 2);
+                expect(testPurchase.dispositions.qualifying.taxes.total).toBeCloseTo(162.56, 2);
                 expect(testPurchase.dispositions.qualifying.outcome).toBe(ESPPTaxOutcome.BEST);
             },
         );

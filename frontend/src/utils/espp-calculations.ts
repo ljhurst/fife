@@ -7,7 +7,7 @@ const ORDINARY_INCOME_TAX_RATE = 0.24;
 const LONG_TERM_CAPITAL_GAINS_TAX_RATE = 0.15;
 
 interface ESPPPurchase {
-    id?: string;
+    id: string;
     grantDate: Date;
     purchaseDate: Date;
     offerStartPrice: number;
@@ -16,8 +16,15 @@ interface ESPPPurchase {
     shares: number;
 }
 
+interface ESPPTaxes {
+    ordinaryIncome: number;
+    stcg: number;
+    ltcg: number;
+    total: number;
+}
+
 interface ESPPDisposition {
-    taxes: number;
+    taxes: ESPPTaxes;
     outcome: ESPPTaxOutcome;
     endDate: Date;
 }
@@ -42,9 +49,16 @@ function loadESPPPurchasesTaxes(esppPurchasesRaw: ESPPPurchaseRaw[]): ESPPPurcha
     return esppPurchases.map(_createESPPPurchaseTaxes);
 }
 
-function updateMarketDependentValues(purchases: ESPPPurchaseTaxes[], marketPrice: number): void {
-    purchases.forEach((purchase) => {
-        purchase.marketGain = _calculateGain(purchase.offerEndPrice, marketPrice, purchase.shares);
+function updateMarketDependentValues(
+    purchases: ESPPPurchaseTaxes[],
+    marketPrice: number,
+): ESPPPurchaseTaxes[] {
+    return [...purchases].map((purchase) => {
+        purchase.marketGain = _calculateMarketGain(
+            purchase.offerEndPrice,
+            marketPrice,
+            purchase.shares,
+        );
         purchase.totalGain = purchase.discountAmount + purchase.marketGain;
 
         const disqualifyingDispositionSTCG = _createDisqualifyingDispositionSTCG(
@@ -64,19 +78,23 @@ function updateMarketDependentValues(purchases: ESPPPurchaseTaxes[], marketPrice
         };
 
         purchase.dispositions = dispositions;
+
+        return purchase;
     });
 }
 
-function clearMarketDependentValues(purchases: ESPPPurchaseTaxes[]): void {
-    purchases.forEach((purchase) => {
+function clearMarketDependentValues(purchases: ESPPPurchaseTaxes[]): ESPPPurchaseTaxes[] {
+    return [...purchases].map((purchase) => {
         delete purchase.marketGain;
         delete purchase.totalGain;
         delete purchase.dispositions;
+
+        return purchase;
     });
 }
 
-export { loadESPPPurchasesTaxes, updateMarketDependentValues, clearMarketDependentValues };
-export type { ESPPPurchaseRaw, ESPPPurchaseTaxes };
+export { clearMarketDependentValues, loadESPPPurchasesTaxes, updateMarketDependentValues };
+export type { ESPPDisposition, ESPPDispositions, ESPPPurchaseTaxes, ESPPTaxes };
 
 function _loadESPPPurchases(esppPurchasesRaw: ESPPPurchaseRaw[]): ESPPPurchase[] {
     return esppPurchasesRaw.map((purchase) => ({
@@ -122,7 +140,7 @@ function _calculateDiscountAmount(
     return discountPerShare * shares;
 }
 
-function _calculateGain(offerEndPrice: number, marketPrice: number, shares: number): number {
+function _calculateMarketGain(offerEndPrice: number, marketPrice: number, shares: number): number {
     return (marketPrice - offerEndPrice) * shares;
 }
 
@@ -141,13 +159,20 @@ function _createDisqualifyingDispositionSTCG(
     };
 }
 
-function _calculateDisqualifyingDispositionSTCGTaxes(purchase: ESPPPurchaseTaxes): number {
+function _calculateDisqualifyingDispositionSTCGTaxes(purchase: ESPPPurchaseTaxes): ESPPTaxes {
     const marketGain = _guardMarketGain(purchase.marketGain);
 
     const discountTaxes = purchase.discountAmount * ORDINARY_INCOME_TAX_RATE;
     const marketGainTaxes = marketGain * ORDINARY_INCOME_TAX_RATE;
 
-    return discountTaxes + marketGainTaxes;
+    const total = discountTaxes + marketGainTaxes;
+
+    return {
+        ordinaryIncome: discountTaxes,
+        stcg: marketGainTaxes,
+        ltcg: 0,
+        total: total,
+    };
 }
 
 function _calculateDisqualifyingDispositionSTCGOutcome(
@@ -190,7 +215,7 @@ function _createDisqualifyingDispositionLTCG(
     };
 }
 
-function _calculateDisqualifyingDispositionLTCGTaxes(purchase: ESPPPurchaseTaxes): number {
+function _calculateDisqualifyingDispositionLTCGTaxes(purchase: ESPPPurchaseTaxes): ESPPTaxes {
     const marketGain = _guardMarketGain(purchase.marketGain);
 
     let marketGainTaxes = 0;
@@ -204,7 +229,14 @@ function _calculateDisqualifyingDispositionLTCGTaxes(purchase: ESPPPurchaseTaxes
 
     const discountTaxes = discountAmount * ORDINARY_INCOME_TAX_RATE;
 
-    return discountTaxes + marketGainTaxes;
+    const total = discountTaxes + marketGainTaxes;
+
+    return {
+        ordinaryIncome: discountTaxes,
+        stcg: 0,
+        ltcg: marketGainTaxes,
+        total: total,
+    };
 }
 
 function _calculateDisqualifyingDispositionLTCGOutcome(
@@ -249,7 +281,7 @@ function _calculateQualifyingDispositionTaxes(
     purchasePrice: number,
     marketPrice: number,
     shares: number,
-): number {
+): ESPPTaxes {
     const qualifyingGain = (marketPrice - purchasePrice) * shares;
     const qualifyingDiscount = offerStartPrice * ESPP_DISCOUNT * shares;
 
@@ -258,7 +290,14 @@ function _calculateQualifyingDispositionTaxes(
     const ordinaryIncomeTaxes = smaller * ORDINARY_INCOME_TAX_RATE;
     const longTermCapitalGainsTaxes = (qualifyingGain - smaller) * LONG_TERM_CAPITAL_GAINS_TAX_RATE;
 
-    return ordinaryIncomeTaxes + longTermCapitalGainsTaxes;
+    const total = ordinaryIncomeTaxes + longTermCapitalGainsTaxes;
+
+    return {
+        ordinaryIncome: ordinaryIncomeTaxes,
+        stcg: 0,
+        ltcg: longTermCapitalGainsTaxes,
+        total: total,
+    };
 }
 
 function _calculateQualifyingDispositionOutcome(
