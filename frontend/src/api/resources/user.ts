@@ -1,7 +1,7 @@
 import { API_HOST, CACHE_BASE_USER, CACHE_BASE_USER_ESPP_LOT } from '@/api/constants';
+import type { ESPPPurchaseRaw } from '@/domain/espp/espp-purchase-raw';
 import type { Settings, RawUserSettings, UserSettings } from '@/domain/user/user-settings';
 import { getCachedItem, setCachedItem, getCacheKey } from '@/utils/cache';
-import type { ESPPPurchaseRaw } from '@/utils/espp-calculations';
 
 async function get(userId: string): Promise<UserSettings> {
     const cacheKey = getCacheKey([CACHE_BASE_USER, userId]);
