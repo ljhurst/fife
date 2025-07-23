@@ -10,6 +10,12 @@ describe('number', () => {
             expect(formattedValue).toBe('$1234.56');
         });
 
+        test('should format zero to USD', () => {
+            const value = 0;
+            const formattedValue = formatUSD(value);
+            expect(formattedValue).toBe('$0.00');
+        });
+
         test('should format negative number to USD', () => {
             const value = -1234.5611;
             const formattedValue = formatUSD(value);

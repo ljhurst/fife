@@ -14,7 +14,7 @@ interface ESPPDetailsUI {
     amount: string;
 }
 
-interface ESSPGainsUI {
+interface ESPPGainsUI {
     discountAmount: string;
     market: string | undefined;
     total: string | undefined;
@@ -54,7 +54,7 @@ interface ESPPPurchaseTaxesUI {
     offerEndPrice: string;
     purchasePrice: string;
     shares: string;
-    gains: ESSPGainsUI;
+    gains: ESPPGainsUI;
     dispositions: ESPPDispositionsUI | undefined;
     uiState: ESPPPurchaseUIState;
 }
@@ -87,11 +87,11 @@ function convertEsppTaxesToUIState(purchasesTaxes: ESPPPurchaseTaxes[]): ESPPPur
 export { convertEsppTaxesToUIState };
 export type { ESPPPurchaseTaxesUI };
 
-function convertGainsToUI(purchase: ESPPPurchaseTaxes): ESSPGainsUI {
+function convertGainsToUI(purchase: ESPPPurchaseTaxes): ESPPGainsUI {
     return {
         discountAmount: formatUSD(purchase.discountAmount),
-        market: purchase.marketGain ? formatUSD(purchase.marketGain) : undefined,
-        total: purchase.totalGain ? formatUSD(purchase.totalGain) : undefined,
+        market: purchase.marketGain !== undefined ? formatUSD(purchase.marketGain) : undefined,
+        total: purchase.totalGain !== undefined ? formatUSD(purchase.totalGain) : undefined,
         details: _convertGainsToDetailsUI(purchase),
     };
 }
