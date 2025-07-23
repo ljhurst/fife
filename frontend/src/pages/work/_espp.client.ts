@@ -176,13 +176,13 @@ function purchaseTableXData(): PurchaseTableXData {
                 }
             },
             toggleActions(this: PurchaseTableXData, event: PointerEvent): void {
-                const selectedPruchaseId = this.methods.findPurchaseId.bind(this)(
+                const selectedPurchaseId = this.methods.findPurchaseId.bind(this)(
                     event,
                     'button[data-purchase-id]',
                 );
 
                 const selectedPurchase =
-                    this.methods.findPurchaseById.bind(this)(selectedPruchaseId);
+                    this.methods.findPurchaseById.bind(this)(selectedPurchaseId);
 
                 this.data.displayPurchases.forEach((purchase) => {
                     if (purchase !== selectedPurchase) {
@@ -198,13 +198,13 @@ function purchaseTableXData(): PurchaseTableXData {
                 });
             },
             toggleDetails(this: PurchaseTableXData, event: PointerEvent): void {
-                const selectedPruchaseId = this.methods.findPurchaseId.bind(this)(
+                const selectedPurchaseId = this.methods.findPurchaseId.bind(this)(
                     event,
                     'a[data-purchase-id]',
                 );
 
                 const selectedPurchase =
-                    this.methods.findPurchaseById.bind(this)(selectedPruchaseId);
+                    this.methods.findPurchaseById.bind(this)(selectedPurchaseId);
 
                 selectedPurchase.uiState.isDetailsOpen = !selectedPurchase.uiState.isDetailsOpen;
                 selectedPurchase.uiState.isActionsOpen = false;
@@ -219,21 +219,23 @@ function purchaseTableXData(): PurchaseTableXData {
                     return;
                 }
 
-                const selectedPruchaseId = this.methods.findPurchaseId.bind(this)(
+                const selectedPurchaseId = this.methods.findPurchaseId.bind(this)(
                     event,
                     'a[data-purchase-id]',
                 );
                 const selectedPurchase =
-                    this.methods.findPurchaseById.bind(this)(selectedPruchaseId);
+                    this.methods.findPurchaseById.bind(this)(selectedPurchaseId);
 
                 try {
+                    selectedPurchase.uiState.isActionsOpen = false;
                     selectedPurchase.uiState.isDeleting = true;
 
-                    await remove(this.data.user.id, selectedPruchaseId);
+                    await remove(this.data.user.id, selectedPurchaseId);
 
-                    this.data.purchases = this.data.purchases.filter(
-                        (purchase) => purchase.id !== selectedPruchaseId,
+                    const remainingPurchases = this.data.purchases.filter(
+                        (purchase) => purchase.id !== selectedPurchaseId,
                     );
+                    this.methods.setPurchases.bind(this)(remainingPurchases);
                 } catch (error) {
                     console.error('Error deleting ESPP lot:', error);
                 } finally {
@@ -248,13 +250,13 @@ function purchaseTableXData(): PurchaseTableXData {
                 const eventTarget = event.target as HTMLElement;
                 const button = eventTarget?.closest(selector) as HTMLElement | null;
 
-                const selectedPruchaseId = button?.dataset.purchaseId;
+                const selectedPurchaseId = button?.dataset.purchaseId;
 
-                if (!selectedPruchaseId) {
+                if (!selectedPurchaseId) {
                     throw new Error('Purchase ID not found in button data attribute');
                 }
 
-                return selectedPruchaseId;
+                return selectedPurchaseId;
             },
             findPurchaseById(this: PurchaseTableXData, purchaseId: string): ESPPPurchaseTaxesUI {
                 const selectedPurchase = this.data.displayPurchases.find(

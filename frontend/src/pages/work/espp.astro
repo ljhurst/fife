@@ -333,6 +333,12 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                         <div class="dropdown-trigger">
                                                             <button
                                                                 class="button is-small"
+                                                                :class="
+                                                                    {
+                                                                        'is-loading':
+                                                                        purchase.uiState.isDeleting
+                                                                    }
+                                                                "
                                                                 aria-haspopup="true"
                                                                 aria-controls="dropdown-menu"
                                                                 @click.stop="
@@ -372,12 +378,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                                                 <a
                                                                     class="dropdown-item
                                                                         has-text-danger"
-                                                                    :class="
-                                                                        {
-                                                                        'is-loading':
-                                                                        purchase.uiState.isDeleting
-                                                                        }
-                                                                    "
                                                                     @click.stop="
                                                                         methods.deleteLot
                                                                     "
