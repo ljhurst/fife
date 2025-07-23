@@ -5,7 +5,7 @@ function formatUSD(value: number): string {
 
     const displayValue = Math.abs(value).toFixed(2);
 
-    if (value > 0) {
+    if (value >= 0) {
         return `$${displayValue}`;
     }
 
