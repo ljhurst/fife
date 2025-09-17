@@ -3,6 +3,7 @@ import CellDetails from '@/components/molecules/CellDetails/CellDetails.astro';
 import DateInput from '@/components/molecules/DateInput/DateInput.astro';
 import FileUpload from '@/components/molecules/FileUpload/FileUpload.astro';
 import NumberInput from '@/components/molecules/NumberInput/NumberInput.astro';
+import ESPPSalesTable from '@/components/organisms/ESPPSalesTable/ESPPSalesTable.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
@@ -403,6 +404,12 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+                <div class="block" x-cloak x-show="methods.showTaxConsiderations" x-transition>
+                    <div class="box">
+                        <h2 class="title is-2">Sold ESPP Lots</h2>
+                        <ESPPSalesTable salesXFor="data.displaySales" />
                     </div>
                 </div>
             </div>

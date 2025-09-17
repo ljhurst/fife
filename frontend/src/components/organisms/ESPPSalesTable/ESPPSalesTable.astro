@@ -1,0 +1,66 @@
+---
+import CellDetails from '@/components/molecules/CellDetails/CellDetails.astro';
+
+interface Props {
+    salesXFor: Array<ESPPSales>;
+}
+
+const { salesXFor } = Astro.props;
+---
+
+<div class="table-container">
+    <table class="table is-hoverable">
+        <thead>
+            <tr>
+                <th>Purchase Date</th>
+                <th>Sale Date</th>
+                <th>Purchase Price</th>
+                <th>Sale Price</th>
+                <th>Sold Shares</th>
+                <th>Gains</th>
+                <th>Disposition</th>
+                <th>Taxes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template x-if={`${salesXFor}.length === 0`}>
+                <tr>
+                    <td colspan="8">
+                        <div class="has-text-centered">
+                            No ESPP sales found.
+                        </div>
+                    </td>
+                </tr>
+            </template>
+            <template x-for={`sale in ${salesXFor}`} :key="sale.id">
+                <tr>
+                    <td x-text="sale.purchase.purchaseDate"></td>
+                    <td x-text="sale.date"></td>
+                    <td class="has-text-right" x-text="sale.purchase.purchasePrice"></td>
+                    <td class="has-text-right" x-text="sale.price"></td>
+                    <td class="has-text-right" x-text="sale.shares"></td>
+                    <td class="has-text-right">
+                        <span x-text="sale.gains.total"></span>
+                        <div x-show="sale.uiState.isDetailsOpen && sale.gains.total">
+                            <CellDetails
+                                lineItemsXFor="sale.gains.details"
+                                totalXText="sale.gains.total"
+                            />
+                        </div>
+                    </td>
+                    <td x-text="sale.disposition.name"></td>
+                    <td class="has-text-right">
+                        <span x-text="sale.disposition.taxes.total"></span>
+                        <div x-show="sale.uiState.isDetailsOpen && sale.disposition.taxes.total">
+                            <CellDetails
+                                lineItemsXFor="sale.disposition.taxes.details"
+                                totalXText="sale.disposition.taxes.total"
+                            />
+                        </div>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>
+<script src="./espp-sales-table.client.ts"></script>

@@ -10,7 +10,12 @@ import {
     type ESPPPurchaseRaw,
 } from '@/domain/espp/espp-purchase-raw';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
-import { convertEsppTaxesToUIState, type ESPPPurchaseTaxesUI } from '@/pages/work/_espp.utils';
+import {
+    convertEsppTaxesToUIState,
+    convertEsppSaleTaxesToUIState,
+    type ESPPPurchaseTaxesUI,
+    type ESPPSaleTaxesUI,
+} from '@/pages/work/_espp.utils';
 import { register } from '@/utils/alpine-components';
 import { isLastElement } from '@/utils/array';
 import { getCurrentUser } from '@/utils/auth';
@@ -19,6 +24,7 @@ import {
     clearMarketDependentValues,
     loadESPPPurchasesTaxes,
     type ESPPPurchaseTaxes,
+    type ESPPSaleTaxes,
     updateMarketDependentValues,
 } from '@/utils/espp-calculations';
 import { read } from '@/utils/file';
@@ -30,6 +36,7 @@ type PurchaseTableXData = XData<
         nkeMarketPrice: string;
         purchases: ESPPPurchaseTaxes[];
         displayPurchases: ESPPPurchaseTaxesUI[];
+        displaySales: ESPPSaleTaxesUI[];
         outcomeClasses: Record<ESPPTaxOutcome, string>;
         isNewLotModalActive: boolean;
         newESPPLot: ESPPPurchaseInput;
@@ -41,6 +48,7 @@ type PurchaseTableXData = XData<
         isLastElement: typeof isLastElement;
         init: () => Promise<void>;
         setPurchases: (esppPurchaseTaxes: ESPPPurchaseTaxes[]) => void;
+        setSales: (esppSalesTaxes: ESPPSaleTaxes[]) => void;
         showTaxConsiderations: () => boolean;
         onFileUpload: (event: CustomEvent) => void;
         onMarketPriceInput: () => void;
@@ -65,6 +73,7 @@ function purchaseTableXData(): PurchaseTableXData {
             nkeMarketPrice: '',
             purchases: [],
             displayPurchases: [],
+            displaySales: [],
             outcomeClasses: {
                 [ESPPTaxOutcome.GOOD]: 'has-background-danger-dark',
                 [ESPPTaxOutcome.BETTER]: 'has-background-warning-dark',
@@ -90,8 +99,9 @@ function purchaseTableXData(): PurchaseTableXData {
                     this.data.isLoadingESPPLots = true;
                     const userLots = await esppLotList(this.data.user.id);
 
-                    const userLotsWithTaxes = loadESPPPurchasesTaxes(userLots);
-                    this.methods.setPurchases.bind(this)(userLotsWithTaxes);
+                    const purchasesAndSalesWithTaxes = loadESPPPurchasesTaxes(userLots);
+                    this.methods.setPurchases.bind(this)(purchasesAndSalesWithTaxes.purchases);
+                    this.methods.setSales.bind(this)(purchasesAndSalesWithTaxes.sales);
                 } catch (error) {
                     console.error('Error fetching ESPP lots:', error);
                 } finally {
@@ -101,6 +111,9 @@ function purchaseTableXData(): PurchaseTableXData {
             setPurchases(this: PurchaseTableXData, esppPurchaseTaxes: ESPPPurchaseTaxes[]): void {
                 this.data.purchases = esppPurchaseTaxes;
                 this.data.displayPurchases = convertEsppTaxesToUIState(esppPurchaseTaxes);
+            },
+            setSales(this: PurchaseTableXData, esppSalesTaxes: ESPPSaleTaxes[]): void {
+                this.data.displaySales = convertEsppSaleTaxesToUIState(esppSalesTaxes);
             },
             showTaxConsiderations(this: PurchaseTableXData): boolean {
                 return !!this.data.user || this.data.purchases.length > 0;
@@ -118,7 +131,7 @@ function purchaseTableXData(): PurchaseTableXData {
                     ...record,
                 })) as ESPPPurchaseRaw[];
 
-                const userLotsWithTaxes = loadESPPPurchasesTaxes(esppPurchases);
+                const userLotsWithTaxes = loadESPPPurchasesTaxes(esppPurchases).purchases;
                 this.methods.setPurchases.bind(this)(userLotsWithTaxes);
             },
             onMarketPriceInput(this: PurchaseTableXData): void {
@@ -164,7 +177,7 @@ function purchaseTableXData(): PurchaseTableXData {
                     await create(this.data.user.id, this.data.newESPPLot);
                     const userLots = await esppLotList(this.data.user.id);
 
-                    const userLotsWithTaxes = loadESPPPurchasesTaxes(userLots);
+                    const userLotsWithTaxes = loadESPPPurchasesTaxes(userLots).purchases;
                     this.methods.setPurchases.bind(this)(userLotsWithTaxes);
 
                     this.methods.onMarketPriceInput.bind(this)();

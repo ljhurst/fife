@@ -1,10 +1,14 @@
+import { ESPPDispositionName } from '@/domain/espp/espp-disposition-name';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
 import { sortArrayOfObjectsByKey } from '@/utils/array';
 import { formatDateYYYYMMDD } from '@/utils/date';
 import {
     type ESPPDisposition,
     type ESPPDispositions,
+    type ESPPPurchaseGains,
     type ESPPPurchaseTaxes,
+    type ESPPSaleGains,
+    type ESPPSaleTaxes,
     type ESPPTaxes,
 } from '@/utils/espp-calculations';
 import { formatUSD, round } from '@/utils/number';
@@ -30,6 +34,7 @@ interface ESPPTaxesUI {
 }
 
 interface ESPPDispositionUI {
+    name: ESPPDispositionName;
     taxes: ESPPTaxesUI;
     outcome: ESPPTaxOutcome;
 }
@@ -40,7 +45,7 @@ interface ESPPDispositionsUI {
     qualifying: ESPPDispositionUI;
 }
 
-interface ESPPPurchaseUIState {
+interface ESPPUIState {
     isDetailsOpen: boolean;
     isActionsOpen: boolean;
     isDeleting: boolean;
@@ -56,7 +61,21 @@ interface ESPPPurchaseTaxesUI {
     shares: string;
     gains: ESPPGainsUI;
     dispositions: ESPPDispositionsUI | undefined;
-    uiState: ESPPPurchaseUIState;
+    uiState: ESPPUIState;
+}
+
+interface ESPPSaleTaxesUI {
+    id: string;
+    date: string;
+    price: string;
+    shares: string;
+    purchase: {
+        purchaseDate: string;
+        purchasePrice: string;
+    };
+    gains: ESPPGainsUI;
+    disposition: ESPPDispositionUI;
+    uiState: ESPPUIState;
 }
 
 function convertEsppTaxesToUIState(purchasesTaxes: ESPPPurchaseTaxes[]): ESPPPurchaseTaxesUI[] {
@@ -69,7 +88,7 @@ function convertEsppTaxesToUIState(purchasesTaxes: ESPPPurchaseTaxes[]): ESPPPur
             offerEndPrice: formatUSD(purchase.offerEndPrice),
             purchasePrice: formatUSD(purchase.purchasePrice),
             shares: round(purchase.shares, 4).toString(),
-            gains: convertGainsToUI(purchase),
+            gains: _convertGainsToUI(purchase.gains),
             dispositions: purchase.dispositions
                 ? _convertDisposistionsToUI(purchase.dispositions)
                 : undefined,
@@ -84,50 +103,75 @@ function convertEsppTaxesToUIState(purchasesTaxes: ESPPPurchaseTaxes[]): ESPPPur
     return sortArrayOfObjectsByKey(purchasesUIState, 'grantDate');
 }
 
-export { convertEsppTaxesToUIState };
-export type { ESPPPurchaseTaxesUI };
+function convertEsppSaleTaxesToUIState(salesTaxes: ESPPSaleTaxes[]): ESPPSaleTaxesUI[] {
+    const salesUIState = salesTaxes.map((sale) => {
+        return {
+            id: sale.id,
+            date: formatDateYYYYMMDD(sale.date),
+            price: formatUSD(sale.price),
+            shares: round(sale.shares, 4).toString(),
+            purchase: {
+                purchaseDate: formatDateYYYYMMDD(sale.purchase.purchaseDate),
+                purchasePrice: formatUSD(sale.purchase.purchasePrice),
+            },
+            gains: _convertGainsToUI(sale.gains),
+            disposition: _convertDisposistionToUI(sale.disposition),
+            uiState: {
+                isDetailsOpen: false,
+                isActionsOpen: false,
+                isDeleting: false,
+            },
+        };
+    });
 
-function convertGainsToUI(purchase: ESPPPurchaseTaxes): ESPPGainsUI {
+    return sortArrayOfObjectsByKey(salesUIState, 'date');
+}
+
+export { convertEsppTaxesToUIState, convertEsppSaleTaxesToUIState };
+export type { ESPPPurchaseTaxesUI, ESPPSaleTaxesUI };
+
+function _convertGainsToUI(gains: ESPPPurchaseGains | ESPPSaleGains): ESPPGainsUI {
     return {
-        discountAmount: formatUSD(purchase.discountAmount),
-        market: purchase.marketGain !== undefined ? formatUSD(purchase.marketGain) : undefined,
-        total: purchase.totalGain !== undefined ? formatUSD(purchase.totalGain) : undefined,
-        details: _convertGainsToDetailsUI(purchase),
+        discountAmount: formatUSD(gains.discountAmount),
+        market: gains.market !== undefined ? formatUSD(gains.market) : undefined,
+        total: gains.total !== undefined ? formatUSD(gains.total) : undefined,
+        details: _convertGainsToDetailsUI(gains),
     };
 }
 
-function _convertGainsToDetailsUI(purchase: ESPPPurchaseTaxes): ESPPDetailsUI[] {
+function _convertGainsToDetailsUI(gains: ESPPPurchaseGains | ESPPSaleGains): ESPPDetailsUI[] {
     const details: ESPPDetailsUI[] = [];
 
-    if (purchase.discountAmount) {
+    if (gains.discountAmount) {
         details.push({
             label: 'Discount',
-            amount: formatUSD(purchase.discountAmount),
+            amount: formatUSD(gains.discountAmount),
         });
     }
 
-    if (purchase.marketGain) {
+    if (gains.market) {
         details.push({
             label: 'Market',
-            amount: formatUSD(purchase.marketGain),
+            amount: formatUSD(gains.market),
         });
     }
 
     return details;
 }
 
-function _convertDisposistionsToUI(disposistions: ESPPDispositions): ESPPDispositionsUI {
+function _convertDisposistionsToUI(dispositions: ESPPDispositions): ESPPDispositionsUI {
     return {
-        disqualifyingSTCG: _convertDisposistionToUI(disposistions.disqualifyingSTCG),
-        disqualifyingLTCG: _convertDisposistionToUI(disposistions.disqualifyingLTCG),
-        qualifying: _convertDisposistionToUI(disposistions.qualifying),
+        disqualifyingSTCG: _convertDisposistionToUI(dispositions.disqualifyingSTCG),
+        disqualifyingLTCG: _convertDisposistionToUI(dispositions.disqualifyingLTCG),
+        qualifying: _convertDisposistionToUI(dispositions.qualifying),
     };
 }
 
-function _convertDisposistionToUI(disposistion: ESPPDisposition): ESPPDispositionUI {
+function _convertDisposistionToUI(disposition: ESPPDisposition): ESPPDispositionUI {
     return {
-        taxes: _convertTaxestoUI(disposistion.taxes),
-        outcome: disposistion.outcome,
+        name: disposition.name,
+        taxes: _convertTaxestoUI(disposition.taxes),
+        outcome: disposition.outcome,
     };
 }
 
