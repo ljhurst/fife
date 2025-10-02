@@ -1,5 +1,6 @@
 import { ESPPDispositionName } from '@/domain/espp/espp-disposition-name';
 import { ESPPTaxOutcome } from '@/domain/espp/espp-tax-outcome';
+import { type TableRowUIState } from '@/domain/ui/table-row-state';
 import { sortArrayOfObjectsByKey } from '@/utils/array';
 import { formatDateYYYYMMDD } from '@/utils/date';
 import {
@@ -45,12 +46,6 @@ interface ESPPDispositionsUI {
     qualifying: ESPPDispositionUI;
 }
 
-interface ESPPUIState {
-    isDetailsOpen: boolean;
-    isActionsOpen: boolean;
-    isDeleting: boolean;
-}
-
 interface ESPPPurchaseTaxesUI {
     id: string;
     grantDate: string;
@@ -61,7 +56,7 @@ interface ESPPPurchaseTaxesUI {
     shares: string;
     gains: ESPPGainsUI;
     dispositions: ESPPDispositionsUI | undefined;
-    uiState: ESPPUIState;
+    uiState: TableRowUIState;
 }
 
 interface ESPPSaleTaxesUI {
@@ -75,7 +70,7 @@ interface ESPPSaleTaxesUI {
     };
     gains: ESPPGainsUI;
     disposition: ESPPDispositionUI;
-    uiState: ESPPUIState;
+    uiState: TableRowUIState;
 }
 
 function convertEsppTaxesToUIState(purchasesTaxes: ESPPPurchaseTaxes[]): ESPPPurchaseTaxesUI[] {
