@@ -1,0 +1,63 @@
+---
+import { type TableRowUIState } from '@/domain/ui/table-row-state';
+
+interface Props {
+    isLastElement: boolean;
+    rowId: string;
+    uiState: TableRowUIState;
+    close: string;
+    toggle: string;
+    onDetails: string;
+    onDelete: string | null;
+}
+
+const { isLastElement } = Astro.props;
+---
+
+<div
+    class="dropdown is-right"
+    :class="{
+        'is-up': methods.isLastElement(data.displayPurchases, index),
+        'is-active': uiState.isActionsOpen
+    }"
+    @click.outside="methods.closeActions"
+>
+    <div class="dropdown-trigger">
+        <button
+            class="button is-small"
+            :class="{ 'is-loading': uiState.isDeleting }"
+            aria-haspopup="true"
+            aria-controls="dropdown-menu"
+            @click.stop="methods.toggleActions"
+            :data-purchase-id="rowId"
+        >
+            <span class="icon is-small">
+                <i class="fas fa-ellipsis-v"></i>
+            </span>
+        </button>
+    </div>
+    <div class="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+            <a
+                class="has-text-info dropdown-item"
+                @click.stop="methods.toggleDetails"
+                :data-purchase-id="rowId"
+            >
+                <span class="icon is-small mr-1">
+                    <i class="fas fa-info-circle"></i>
+                </span>
+                Details
+            </a>
+            <a
+                class="dropdown-item has-text-danger"
+                @click.stop="methods.deleteLot"
+                :data-purchase-id="rowId"
+            >
+                <span class="icon is-small mr-1">
+                    <i class="fas fa-trash"></i>
+                </span>
+                Delete
+            </a>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,7 @@
     "description": "Finance for Everyone",
     "author": "Luke Hurst <hurstlj@umich.edu",
     "type": "module",
-    "version": "0.14.0",
+    "version": "0.14.1",
     "scripts": {
         "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,astro}\" \"test/**/*.ts\"",
         "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,astro}\" \"test/**/*.ts\"",
