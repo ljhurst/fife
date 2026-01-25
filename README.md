@@ -89,6 +89,21 @@ Then log into the console and upload each zip file to its appropriate Lambda fun
 
 ### Developer Experience
 
+#### Code Conventions
+
+Code conventions are enforced via [pre-commit](https://pre-commit.com/).
+To install the git hooks run:
+
+```bash
+pre-commit install
+```
+
+Then make sure everything is working with
+
+```bash
+pre-commit run --all-files
+```
+
 #### Unit Tests
 
 We use [Go Test](https://pkg.go.dev/cmd/go#hdr-Test_packages) for unit tests
@@ -148,64 +163,35 @@ See [deployment runs](https://github.com/ljhurst/fife/actions)
 - IAM Policy: `fife-deploy-policy`
 - Access Method: `Access Keys`
 
-## AWS Resources
+### Infrastructure as Code
 
-### API Gateway
+Infrastructure is managed by [Terraform](https://www.terraform.io/).
 
-#### APIs
+Go to `infra/` and initialize Terraform:
 
-- `fife-api`
+```bash
+cd infra/
+terraform init
+```
 
-### Cognito
+Review the planned changes:
 
-#### User Pools
+```bash
+terraform plan
+```
 
-- `fife-user-pool`
+Apply the changes:
 
-#### App Clients
+```bash
+terraform apply
+```
 
-- `fife-app-client`
+When making changes to the infrastructure be sure to format and validate:
 
-### DynamoDB
-
-#### Tables
-
-- `fife-users`
-- `fife-espp-lots`
-  - Indexes
-    - `userId-index`
-
-### IAM
-
-#### Users
-
-- `fife-deploy-user`
-
-#### Roles
-
-- `fife-lambda-apigateway-role`
-
-#### Policies
-
-- `fife-lambda-apigateway-policy`
-- `fife-deploy-policy`
-
-### Lambda
-
-#### Functions
-
-- `fife-espp-lot-create`
-- `fife-espp-lot-delete`
-- `fife-espp-lot-get`
-- `fife-user-espp-lot-list`
-- `fife-user-get`
-- `fife-user-update`
-
-### S3
-
-#### Buckets
-
-- `lj-fife`
+```bash
+terraform fmt
+terraform validate
+```
 
 ## Tech Stack
 

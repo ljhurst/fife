@@ -1,6 +1,7 @@
 ---
 name: Deploy Application
 
+# yamllint disable rule:truthy
 on:
   push:
     branches: [main]
