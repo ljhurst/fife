@@ -36,3 +36,12 @@ backend/coverage.*
 
 # Aider
 .aider*
+
+
+# Terraform
+
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform/
+*.zip
