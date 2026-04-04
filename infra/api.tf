@@ -105,6 +105,38 @@ resource "aws_api_gateway_integration" "espp_lot_options" {
   resource_id = aws_api_gateway_resource.espp_lot.id
   http_method = aws_api_gateway_method.espp_lot_options.http_method
   type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "espp_lot_options_200" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.espp_lot.id
+  http_method = aws_api_gateway_method.espp_lot_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = false
+    "method.response.header.Access-Control-Allow-Methods" = false
+    "method.response.header.Access-Control-Allow-Origin"  = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "espp_lot_options_200" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.espp_lot.id
+  http_method = aws_api_gateway_method.espp_lot_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+
+  depends_on = [aws_api_gateway_integration.espp_lot_options]
 }
 
 # GET /espp/lot/{lotId} - Get ESPP Lot
@@ -216,6 +248,38 @@ resource "aws_api_gateway_integration" "espp_lot_id_options" {
   resource_id = aws_api_gateway_resource.espp_lot_id.id
   http_method = aws_api_gateway_method.espp_lot_id_options.http_method
   type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "espp_lot_id_options_200" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.espp_lot_id.id
+  http_method = aws_api_gateway_method.espp_lot_id_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = false
+    "method.response.header.Access-Control-Allow-Methods" = false
+    "method.response.header.Access-Control-Allow-Origin"  = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "espp_lot_id_options_200" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.espp_lot_id.id
+  http_method = aws_api_gateway_method.espp_lot_id_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+
+  depends_on = [aws_api_gateway_integration.espp_lot_id_options]
 }
 
 # GET /user/{userId} - Get User
@@ -327,6 +391,38 @@ resource "aws_api_gateway_integration" "user_id_options" {
   resource_id = aws_api_gateway_resource.user_id.id
   http_method = aws_api_gateway_method.user_id_options.http_method
   type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "user_id_options_200" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.user_id.id
+  http_method = aws_api_gateway_method.user_id_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = false
+    "method.response.header.Access-Control-Allow-Methods" = false
+    "method.response.header.Access-Control-Allow-Origin"  = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "user_id_options_200" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.user_id.id
+  http_method = aws_api_gateway_method.user_id_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,PUT,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+
+  depends_on = [aws_api_gateway_integration.user_id_options]
 }
 
 # GET /user/{userId}/espp-lot - List User ESPP Lots
@@ -390,6 +486,38 @@ resource "aws_api_gateway_integration" "user_espp_lot_options" {
   resource_id = aws_api_gateway_resource.user_espp_lot.id
   http_method = aws_api_gateway_method.user_espp_lot_options.http_method
   type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "user_espp_lot_options_200" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.user_espp_lot.id
+  http_method = aws_api_gateway_method.user_espp_lot_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = false
+    "method.response.header.Access-Control-Allow-Methods" = false
+    "method.response.header.Access-Control-Allow-Origin"  = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "user_espp_lot_options_200" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.user_espp_lot.id
+  http_method = aws_api_gateway_method.user_espp_lot_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+
+  depends_on = [aws_api_gateway_integration.user_espp_lot_options]
 }
 
 # Lambda Permissions
@@ -446,26 +574,7 @@ resource "aws_api_gateway_deployment" "main" {
   rest_api_id = aws_api_gateway_rest_api.main.id
 
   triggers = {
-    redeployment = sha1(jsonencode([
-      aws_api_gateway_resource.espp.id,
-      aws_api_gateway_resource.espp_lot.id,
-      aws_api_gateway_resource.espp_lot_id.id,
-      aws_api_gateway_resource.user.id,
-      aws_api_gateway_resource.user_id.id,
-      aws_api_gateway_resource.user_espp_lot.id,
-      aws_api_gateway_method.espp_lot_post.id,
-      aws_api_gateway_method.espp_lot_id_get.id,
-      aws_api_gateway_method.espp_lot_id_delete.id,
-      aws_api_gateway_method.user_id_get.id,
-      aws_api_gateway_method.user_id_put.id,
-      aws_api_gateway_method.user_espp_lot_get.id,
-      aws_api_gateway_integration.espp_lot_post.id,
-      aws_api_gateway_integration.espp_lot_id_get.id,
-      aws_api_gateway_integration.espp_lot_id_delete.id,
-      aws_api_gateway_integration.user_id_get.id,
-      aws_api_gateway_integration.user_id_put.id,
-      aws_api_gateway_integration.user_espp_lot_get.id,
-    ]))
+    redeployment = filesha1("${path.module}/api.tf")
   }
 
   lifecycle {
