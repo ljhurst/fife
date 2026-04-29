@@ -8,20 +8,20 @@ import {
 } from '@/utils/date';
 
 function isPaychecksRemainingInputsReady(input: PaychecksRemainingInput): boolean {
-    const isKnownPaycheckDateValid = input.knownPaycheckDate.getTime() !== EPOCH_DATE.getTime();
+    const isNextPaycheckDateValid = input.nextPaycheckDate.getTime() !== EPOCH_DATE.getTime();
 
-    return Boolean(input.paychecksPerYear) && isKnownPaycheckDateValid;
+    return Boolean(input.paychecksPerYear) && isNextPaycheckDateValid;
 }
 
 function calculatePaychecksRemaining(input: PaychecksRemainingInput): number {
-    const firstDayOfNextYearFromPaycheckDate = firstDayOfNextYearFromDate(input.knownPaycheckDate);
+    const firstDayOfNextYearFromPaycheckDate = firstDayOfNextYearFromDate(input.nextPaycheckDate);
     const firstDayOfNextYearFromPaycheckPlusOneDate = addDays(
         firstDayOfNextYearFromPaycheckDate,
         1,
     );
 
     const weeksBetweenPaycheckDateAndFirstOfNextYear = Math.ceil(
-        weeksBewteenDates(input.knownPaycheckDate, firstDayOfNextYearFromPaycheckPlusOneDate),
+        weeksBewteenDates(input.nextPaycheckDate, firstDayOfNextYearFromPaycheckPlusOneDate),
     );
 
     const paychecksPerWeek = input.paychecksPerYear / WEEKS_PER_YEAR;

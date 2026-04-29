@@ -1,6 +1,6 @@
 interface PaychecksRemainingInput {
     paychecksPerYear: number;
-    knownPaycheckDate: Date;
+    nextPaycheckDate: Date;
 }
 
 export type { PaychecksRemainingInput };

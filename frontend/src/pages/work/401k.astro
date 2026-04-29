@@ -1,6 +1,7 @@
 ---
 import CalculationBreakdown from '@/components/molecules/CalculationBreakdown/CalculationBreakdown.astro';
 import NumberInput from '@/components/molecules/NumberInput/NumberInput.astro';
+import { ROUTES } from '@/constants';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
@@ -57,6 +58,27 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                             xModel="data.paychecksRemaining"
                             onInput="methods.on401kDetailsInput"
                         />
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal"></div>
+                            <div class="field-body">
+                                <p class="help">
+                                    <a
+                                        href={`/${ROUTES.WORK_PAYCHECK}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="has-text-info"
+                                    >
+                                        <span class="icon is-small">
+                                            <i class="fas fa-calculator"></i>
+                                        </span>
+                                        Don't know? Calculate it
+                                        <span class="icon is-small">
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </span>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="block" x-cloak x-show="methods.showMaximize401k" x-transition>
