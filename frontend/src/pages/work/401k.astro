@@ -95,11 +95,18 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
                         <div x-show="data.isDetailsOpen" x-transition x-cloak>
                             <template x-if="data.breakdownItems.length > 0">
-                                <CalculationBreakdown
-                                    itemsXFor="data.breakdownItems"
-                                    resultLabel="Total Contributions (with ceil)"
-                                    resultXText="data.breakdownTotal"
-                                />
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal"></div>
+                                    <div class="field-body">
+                                        <div class="field is-narrow">
+                                            <CalculationBreakdown
+                                                itemsXFor="data.breakdownItems"
+                                                resultLabel="Total Contributions (with ceil)"
+                                                resultXText="data.breakdownTotal"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </template>
                         </div>
                     </div>
