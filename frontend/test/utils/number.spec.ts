@@ -4,10 +4,10 @@ import { formatUSD, round } from '@/utils/number';
 
 describe('number', () => {
     describe('formatUSD', () => {
-        test('should format positive number to USD', () => {
+        test('should format positive number to USD with commas', () => {
             const value = 1234.5611;
             const formattedValue = formatUSD(value);
-            expect(formattedValue).toBe('$1234.56');
+            expect(formattedValue).toBe('$1,234.56');
         });
 
         test('should format zero to USD', () => {
@@ -16,10 +16,10 @@ describe('number', () => {
             expect(formattedValue).toBe('$0.00');
         });
 
-        test('should format negative number to USD', () => {
+        test('should format negative number to USD with commas', () => {
             const value = -1234.5611;
             const formattedValue = formatUSD(value);
-            expect(formattedValue).toBe('-$1234.56');
+            expect(formattedValue).toBe('-$1,234.56');
         });
 
         test('should format NaN to empty string', () => {

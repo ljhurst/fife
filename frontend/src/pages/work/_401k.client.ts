@@ -4,9 +4,17 @@ import type { XData } from '@/domain/components/x-data';
 import {
     isMaximize401kInputsReady,
     calculate401kContributionPercent,
+    calculate401kBreakdown,
+    type Maximize401kBreakdown,
 } from '@/utils/401k-calculations';
 import { register } from '@/utils/alpine-components';
 import { getCurrentUser } from '@/utils/auth';
+import { formatUSD } from '@/utils/number';
+
+interface BreakdownItem {
+    label: string;
+    value: string;
+}
 
 type Maximize401kXData = XData<
     {
@@ -16,11 +24,16 @@ type Maximize401kXData = XData<
         paychecksPerYear: number | null;
         paychecksRemaining: string | null;
         ceilContributionPercent: number | null;
+        isDetailsOpen: boolean;
+        breakdownDetails: Maximize401kBreakdown | null;
+        breakdownItems: BreakdownItem[];
+        breakdownTotal: string;
     },
     {
         init: () => Promise<void>;
         showMaximize401k: () => boolean;
         on401kDetailsInput: () => void;
+        toggleDetails: () => void;
     }
 >;
 
@@ -33,6 +46,10 @@ function maximize401kXData(): Maximize401kXData {
             paychecksPerYear: null,
             paychecksRemaining: null,
             ceilContributionPercent: null,
+            isDetailsOpen: false,
+            breakdownDetails: null,
+            breakdownItems: [],
+            breakdownTotal: '',
         },
         methods: {
             async init(this: Maximize401kXData): Promise<void> {
@@ -63,11 +80,39 @@ function maximize401kXData(): Maximize401kXData {
 
                 if (!isMaximize401kInputsReady(input)) {
                     this.data.ceilContributionPercent = null;
+                    this.data.breakdownDetails = null;
+                    this.data.breakdownItems = [];
+                    this.data.breakdownTotal = '';
                     return;
                 }
 
                 const contributionPercent = calculate401kContributionPercent(input);
                 this.data.ceilContributionPercent = Math.ceil(contributionPercent);
+
+                const breakdown = calculate401kBreakdown(input);
+                this.data.breakdownDetails = breakdown;
+                this.data.breakdownItems = [
+                    {
+                        label: 'Remaining Contribution',
+                        value: formatUSD(breakdown.remainingContribution),
+                    },
+                    {
+                        label: 'Salary Per Paycheck',
+                        value: formatUSD(breakdown.salaryPerPaycheck),
+                    },
+                    {
+                        label: 'Contribution Per Paycheck',
+                        value: formatUSD(breakdown.contributionPerPaycheck),
+                    },
+                    {
+                        label: 'Raw Percentage',
+                        value: breakdown.rawPercentage.toFixed(2) + '%',
+                    },
+                ];
+                this.data.breakdownTotal = formatUSD(breakdown.totalWithCeiledPercent);
+            },
+            toggleDetails(this: Maximize401kXData): void {
+                this.data.isDetailsOpen = !this.data.isDetailsOpen;
             },
         },
     };
@@ -75,12 +120,21 @@ function maximize401kXData(): Maximize401kXData {
 
 register('maximize401kXData', maximize401kXData);
 
-function parseInputs(inputs: Record<string, string | number | null>): Maximize401kInput {
+function parseInputs(
+    inputs: Pick<
+        Maximize401kXData['data'],
+        | 'annualSalary'
+        | 'annualContributionLimit'
+        | 'contributionsSoFar'
+        | 'paychecksPerYear'
+        | 'paychecksRemaining'
+    >,
+): Maximize401kInput {
     return {
         annualSalary: parseFloat(inputs.annualSalary as string),
         annualContributionLimit: parseInt(inputs.annualContributionLimit as string),
         contributionsSoFar: parseFloat(inputs.contributionsSoFar as string),
-        paychecksPerYear: parseInt(inputs.paychecksPerYear as string),
+        paychecksPerYear: inputs.paychecksPerYear as number,
         paychecksRemaining: parseInt(inputs.paychecksRemaining as string),
     };
 }

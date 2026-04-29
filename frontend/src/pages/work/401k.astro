@@ -1,4 +1,5 @@
 ---
+import CalculationBreakdown from '@/components/molecules/CalculationBreakdown/CalculationBreakdown.astro';
 import NumberInput from '@/components/molecules/NumberInput/NumberInput.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
@@ -70,6 +71,44 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                             value="data.ceilContributionPercent"
                             readonly="true"
                         />
+
+                        <div class="mt-4">
+                            <a
+                                class="is-size-7 has-text-info"
+                                style="cursor: pointer;"
+                                @click="methods.toggleDetails"
+                            >
+                                <span class="icon is-small">
+                                    <i
+                                        class="fas"
+                                        :class="
+                                            data.isDetailsOpen ?
+                                            'fa-chevron-up' :
+                                            'fa-chevron-down'
+                                        "
+                                    ></i>
+                                </span>
+                                <span x-text="data.isDetailsOpen ? 'Hide Details' : 'Show Details'">
+                                </span>
+                            </a>
+                        </div>
+
+                        <div x-show="data.isDetailsOpen" x-transition x-cloak>
+                            <template x-if="data.breakdownItems.length > 0">
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal"></div>
+                                    <div class="field-body">
+                                        <div class="field is-narrow">
+                                            <CalculationBreakdown
+                                                itemsXFor="data.breakdownItems"
+                                                resultLabel="Total Contributions (with ceil)"
+                                                resultXText="data.breakdownTotal"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </div>
