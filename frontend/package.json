@@ -1,7 +1,7 @@
 {
     "name": "fife",
     "description": "Finance for Everyone",
-    "author": "Luke Hurst <hurstlj@umich.edu",
+    "author": "Luke Hurst <hurstlj@umich.edu>",
     "type": "module",
     "version": "0.14.1",
     "scripts": {

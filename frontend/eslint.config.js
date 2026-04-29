@@ -20,7 +20,13 @@ export default [
             'comma-dangle': ['error', 'always-multiline'],
             indent: ['error', 4],
             'no-unused-vars': 'off',
-            'max-len': ['error', { code: 100 }],
+            'max-len': [
+                'error',
+                {
+                    code: 100,
+                    ignorePattern: '^import\\s.+\\sfrom\\s.+;$',
+                },
+            ],
             'import/order': [
                 'error',
                 {

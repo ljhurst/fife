@@ -3,7 +3,10 @@ function formatUSD(value: number): string {
         return '';
     }
 
-    const displayValue = Math.abs(value).toFixed(2);
+    const displayValue = Math.abs(value).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
 
     if (value >= 0) {
         return `$${displayValue}`;
