@@ -28,10 +28,21 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                             onInput="methods.onPaychecksRemainingInput"
                         />
                         <DateInput
-                            label="Known Paycheck Date"
-                            xModel="data.knownPaycheckDate"
+                            label="Next Paycheck Date"
+                            xModel="data.nextPaycheckDate"
                             onInput="methods.onPaychecksRemainingInput"
                         />
+                        <div class="field is-horizontal" x-show="data.nextPaycheckDate" x-cloak>
+                            <div class="field-label is-normal"></div>
+                            <div class="field-body">
+                                <p class="help has-text-info">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                    Including this paycheck in the count
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="block" x-cloak x-show="methods.showPaychecksRemaining" x-transition>

@@ -11,7 +11,7 @@ import {
 type PaychecksRemainingXData = XData<
     {
         paychecksPerYear: string | null;
-        knownPaycheckDate: string | null;
+        nextPaycheckDate: string | null;
         paychecksRemaining: number | null;
     },
     {
@@ -25,7 +25,7 @@ function paychecksRemainingXData(): PaychecksRemainingXData {
     return {
         data: {
             paychecksPerYear: null,
-            knownPaycheckDate: null,
+            nextPaycheckDate: null,
             paychecksRemaining: null,
         },
         methods: {
@@ -69,6 +69,6 @@ function parsePaycheckRemainingInputs(
 ): PaychecksRemainingInput {
     return {
         paychecksPerYear: parseInt(data.paychecksPerYear as string),
-        knownPaycheckDate: new Date(data.knownPaycheckDate as string),
+        nextPaycheckDate: new Date(data.nextPaycheckDate as string),
     };
 }
