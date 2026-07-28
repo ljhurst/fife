@@ -8,7 +8,7 @@ locals {
       "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
     }
     StringLike = {
-      "token.actions.githubusercontent.com:sub" = "repo:ljhurst/fife:ref:refs/heads/main"
+      "token.actions.githubusercontent.com:sub" = "repo:ljhurst/fife:environment:prod"
     }
   }
 }
