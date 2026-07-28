@@ -159,9 +159,27 @@ See [deployment runs](https://github.com/ljhurst/fife/actions)
 
 ### AWS Credentials
 
-- IAM User: `fife-deploy-user`
-- IAM Policy: `fife-deploy-policy`
-- Access Method: `Access Keys`
+GitHub Actions authenticates via OIDC (no stored AWS access keys). Each
+workflow assumes a scoped IAM role:
+
+- Frontend deploy: `fife-github-actions-frontend-deploy`
+- Backend deploy: `fife-github-actions-backend-deploy`
+
+The role ARNs are stored as repository variables
+(`AWS_FRONTEND_DEPLOY_ROLE_ARN`, `AWS_BACKEND_DEPLOY_ROLE_ARN`) and read in
+`.github/workflows/deploy.yml`. Both deploy jobs can also be run manually via
+`workflow_dispatch` from the Actions tab.
+
+For local Terraform access, use IAM Identity Center instead of a static IAM
+user:
+
+```bash
+aws sso login --profile fife-deploy
+AWS_PROFILE=fife-deploy terraform plan
+```
+
+(One-time setup: `aws configure sso` to create the `fife-deploy` profile,
+pointed at the `fife-deploy` permission set.)
 
 ### Infrastructure as Code
 
