@@ -37,3 +37,13 @@ output "api_gateway_invoke_url" {
   description = "API Gateway invoke URL"
   value       = aws_api_gateway_stage.prod.invoke_url
 }
+
+output "github_actions_frontend_deploy_role_arn" {
+  description = "IAM role ARN assumed by GitHub Actions to deploy the frontend"
+  value       = aws_iam_role.github_actions_frontend_deploy.arn
+}
+
+output "github_actions_backend_deploy_role_arn" {
+  description = "IAM role ARN assumed by GitHub Actions to deploy the backend"
+  value       = aws_iam_role.github_actions_backend_deploy.arn
+}
