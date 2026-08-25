@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 
+	"github.com/ljhurst/fife/pkg/auth"
 	"github.com/ljhurst/fife/pkg/db"
 	"github.com/ljhurst/fife/pkg/models"
 	"github.com/ljhurst/fife/pkg/utils"
@@ -19,12 +20,18 @@ import (
 
 type createEsppLotFunc func(svc dynamodbiface.DynamoDBAPI, lot models.EsppLotInput) (*models.EsppLot, error)
 
-func handlerWithDeps(createEsppLotFn createEsppLotFunc) func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handlerWithDeps(createEsppLotFn createEsppLotFunc) func(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	return func(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+		userID, err := auth.Subject(request)
+		if err != nil {
+			return utils.UnauthorizedError()
+		}
+
 		var lot models.EsppLotInput
 		if err := json.Unmarshal([]byte(request.Body), &lot); err != nil {
 			return utils.InvalidRequestBodyError()
 		}
+		lot.UserID = userID
 
 		sess := session.Must(session.NewSession())
 		svc := dynamodb.New(sess, aws.NewConfig().WithRegion(os.Getenv("AWS_REGION")))
@@ -38,7 +45,7 @@ func handlerWithDeps(createEsppLotFn createEsppLotFunc) func(ctx context.Context
 	}
 }
 
-func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	handlerWithInjectedDeps := handlerWithDeps(db.CreateEsppLot)
 	return handlerWithInjectedDeps(ctx, request)
 }

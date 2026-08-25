@@ -12,10 +12,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func requestWithSub(sub, body string) events.APIGatewayV2HTTPRequest {
+	request := events.APIGatewayV2HTTPRequest{Body: body}
+	if sub != "" {
+		request.RequestContext.Authorizer = &events.APIGatewayV2HTTPRequestContextAuthorizerDescription{
+			JWT: &events.APIGatewayV2HTTPRequestContextAuthorizerJWTDescription{
+				Claims: map[string]string{"sub": sub},
+			},
+		}
+	}
+	return request
+}
+
 func TestHandler(t *testing.T) {
 	testCases := []struct {
 		name                 string
-		request              events.APIGatewayProxyRequest
+		request              events.APIGatewayV2HTTPRequest
 		mockLot              *models.EsppLotInput
 		mockError            error
 		expectedStatusCode   int
@@ -23,17 +35,14 @@ func TestHandler(t *testing.T) {
 	}{
 		{
 			name: "successful creation",
-			request: events.APIGatewayProxyRequest{
-				Body: `{
-					"userId": "user123",
-					"grantDate": "2023-01-01",
-					"purchaseDate": "2023-06-30",
-					"offerStartPrice": 100.0,
-					"offerEndPrice": 120.0,
-					"purchasePrice": 85.0,
-					"shares": 10.0
-				}`,
-			},
+			request: requestWithSub("user123", `{
+				"grantDate": "2023-01-01",
+				"purchaseDate": "2023-06-30",
+				"offerStartPrice": 100.0,
+				"offerEndPrice": 120.0,
+				"purchasePrice": 85.0,
+				"shares": 10.0
+			}`),
 			mockLot: &models.EsppLotInput{
 				UserID:          "user123",
 				GrantDate:       "2023-01-01",
@@ -48,10 +57,16 @@ func TestHandler(t *testing.T) {
 			expectedBodyContains: `"userId":"user123"`,
 		},
 		{
-			name: "invalid request body",
-			request: events.APIGatewayProxyRequest{
-				Body: `{invalid json}`,
-			},
+			name:                 "missing subject",
+			request:              requestWithSub("", `{}`),
+			mockLot:              nil,
+			mockError:            nil,
+			expectedStatusCode:   401,
+			expectedBodyContains: `"error":"Unauthorized"`,
+		},
+		{
+			name:                 "invalid request body",
+			request:              requestWithSub("user123", `{invalid json}`),
 			mockLot:              nil,
 			mockError:            nil,
 			expectedStatusCode:   400,
@@ -59,17 +74,14 @@ func TestHandler(t *testing.T) {
 		},
 		{
 			name: "database error",
-			request: events.APIGatewayProxyRequest{
-				Body: `{
-					"userId": "user123",
-					"grantDate": "2023-01-01",
-					"purchaseDate": "2023-06-30",
-					"offerStartPrice": 100.0,
-					"offerEndPrice": 120.0,
-					"purchasePrice": 85.0,
-					"shares": 10.0
-				}`,
-			},
+			request: requestWithSub("user123", `{
+				"grantDate": "2023-01-01",
+				"purchaseDate": "2023-06-30",
+				"offerStartPrice": 100.0,
+				"offerEndPrice": 120.0,
+				"purchasePrice": 85.0,
+				"shares": 10.0
+			}`),
 			mockLot:              nil,
 			mockError:            errors.New("database error"),
 			expectedStatusCode:   500,

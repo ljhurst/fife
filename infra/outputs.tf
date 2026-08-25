@@ -35,7 +35,7 @@ output "lambda_functions" {
 
 output "api_gateway_invoke_url" {
   description = "API Gateway invoke URL"
-  value       = aws_api_gateway_stage.prod.invoke_url
+  value       = aws_apigatewayv2_stage.prod.invoke_url
 }
 
 output "github_actions_frontend_deploy_role_arn" {

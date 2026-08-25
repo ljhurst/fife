@@ -11,22 +11,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func requestWithSub(sub string, pathParameters map[string]string) events.APIGatewayV2HTTPRequest {
+	request := events.APIGatewayV2HTTPRequest{PathParameters: pathParameters}
+	if sub != "" {
+		request.RequestContext.Authorizer = &events.APIGatewayV2HTTPRequestContextAuthorizerDescription{
+			JWT: &events.APIGatewayV2HTTPRequestContextAuthorizerJWTDescription{
+				Claims: map[string]string{"sub": sub},
+			},
+		}
+	}
+	return request
+}
+
 func TestHandler(t *testing.T) {
 	testCases := []struct {
 		name               string
-		request            events.APIGatewayProxyRequest
+		request            events.APIGatewayV2HTTPRequest
 		mockLot            *models.EsppLot
 		mockError          error
 		expectedStatusCode int
 		expectedBody       string
 	}{
 		{
-			name: "successful retrieval",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"lotId": "lot123",
-				},
-			},
+			name:    "successful retrieval",
+			request: requestWithSub("user123", map[string]string{"lotId": "lot123"}),
 			mockLot: &models.EsppLot{
 				ID:              "lot123",
 				UserID:          "user123",
@@ -44,38 +52,47 @@ func TestHandler(t *testing.T) {
 			expectedBody:       `{"id":"lot123","userId":"user123","grantDate":"2023-01-01","purchaseDate":"2023-06-30","offerStartPrice":100,"offerEndPrice":120,"purchasePrice":85,"shares":10,"createdAt":"2023-01-01T00:00:00Z","updatedAt":"2023-01-01T00:00:00Z"}`,
 		},
 		{
-			name: "lot not found",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"lotId": "nonexistent",
-				},
-			},
+			name:               "lot not found",
+			request:            requestWithSub("user123", map[string]string{"lotId": "nonexistent"}),
 			mockLot:            nil,
 			mockError:          nil,
 			expectedStatusCode: 404,
 			expectedBody:       `{"error":"ESPP lot not found"}`,
 		},
 		{
-			name: "database error",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"lotId": "lot123",
-				},
+			name:    "lot owned by another user",
+			request: requestWithSub("user123", map[string]string{"lotId": "lot123"}),
+			mockLot: &models.EsppLot{
+				ID:     "lot123",
+				UserID: "someone-else",
 			},
+			mockError:          nil,
+			expectedStatusCode: 403,
+			expectedBody:       `{"error":"Forbidden"}`,
+		},
+		{
+			name:               "database error",
+			request:            requestWithSub("user123", map[string]string{"lotId": "lot123"}),
 			mockLot:            nil,
 			mockError:          errors.New("database error"),
 			expectedStatusCode: 500,
 			expectedBody:       `{"error":"Failed to retrieve ESPP lot"}`,
 		},
 		{
-			name: "missing lot ID",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{},
-			},
+			name:               "missing lot ID",
+			request:            requestWithSub("user123", map[string]string{}),
 			mockLot:            nil,
 			mockError:          nil,
 			expectedStatusCode: 400,
 			expectedBody:       `{"error":"Missing path parameter: lotId"}`,
+		},
+		{
+			name:               "missing subject",
+			request:            requestWithSub("", map[string]string{"lotId": "lot123"}),
+			mockLot:            nil,
+			mockError:          nil,
+			expectedStatusCode: 401,
+			expectedBody:       `{"error":"Unauthorized"}`,
 		},
 	}
 

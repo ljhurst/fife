@@ -11,22 +11,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func requestWithSub(sub string) events.APIGatewayV2HTTPRequest {
+	request := events.APIGatewayV2HTTPRequest{}
+	if sub != "" {
+		request.RequestContext.Authorizer = &events.APIGatewayV2HTTPRequestContextAuthorizerDescription{
+			JWT: &events.APIGatewayV2HTTPRequestContextAuthorizerJWTDescription{
+				Claims: map[string]string{"sub": sub},
+			},
+		}
+	}
+	return request
+}
+
 func TestHandler(t *testing.T) {
 	testCases := []struct {
 		name               string
-		request            events.APIGatewayProxyRequest
+		request            events.APIGatewayV2HTTPRequest
 		mockUser           *models.User
 		mockError          error
 		expectedStatusCode int
 		expectedBody       string
 	}{
 		{
-			name: "Success",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"userId": "user123",
-				},
-			},
+			name:    "Success",
+			request: requestWithSub("user123"),
 			mockUser: &models.User{
 				UserID: "user123",
 				Settings: models.UserSettings{
@@ -43,34 +51,24 @@ func TestHandler(t *testing.T) {
 			expectedBody:       `{"userId":"user123","settings":{"finance":{"annualSalary":100000,"paychecksPerYear":26}},"createdAt":"2023-01-01T00:00:00Z","updatedAt":"2023-01-02T00:00:00Z"}`,
 		},
 		{
-			name: "Missing User ID",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{},
-			},
+			name:               "Missing Subject",
+			request:            requestWithSub(""),
 			mockUser:           nil,
 			mockError:          nil,
-			expectedStatusCode: 400,
-			expectedBody:       `{"error":"Missing path parameter: userId"}`,
+			expectedStatusCode: 401,
+			expectedBody:       `{"error":"Unauthorized"}`,
 		},
 		{
-			name: "User Not Found",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"userId": "nonexistent",
-				},
-			},
+			name:               "User Not Found",
+			request:            requestWithSub("nonexistent"),
 			mockUser:           nil,
 			mockError:          nil,
 			expectedStatusCode: 404,
 			expectedBody:       `{"error":"User not found"}`,
 		},
 		{
-			name: "Database Error",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"userId": "user123",
-				},
-			},
+			name:               "Database Error",
+			request:            requestWithSub("user123"),
 			mockUser:           nil,
 			mockError:          errors.New("database error"),
 			expectedStatusCode: 500,

@@ -1,7 +1,6 @@
 ---
 import Logout from '@/components/molecules/auth/Logout/Logout.astro';
 import SignIn from '@/components/molecules/auth/SignIn/SignIn.astro';
-import SignUp from '@/components/molecules/auth/SignUp/SignUp.astro';
 import { SITE_TITLE, ROUTES } from '@/constants';
 ---
 
@@ -45,9 +44,6 @@ import { SITE_TITLE, ROUTES } from '@/constants';
             </div>
         </div>
         <div class="navbar-end">
-            <div class="navbar-item" x-show="!data.currentUser" x-cloak>
-                <SignUp />
-            </div>
             <div class="navbar-item" x-show="!data.currentUser" x-cloak>
                 <SignIn />
             </div>
