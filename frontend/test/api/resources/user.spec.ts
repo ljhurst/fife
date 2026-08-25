@@ -45,7 +45,7 @@ describe('user', () => {
 
             const result = await get(mockUserId);
 
-            expect(global.fetch).toHaveBeenCalledWith(`${API_HOST}/user/${mockUserId}`);
+            expect(global.fetch).toHaveBeenCalledWith(`${API_HOST}/user`, { headers: {} });
 
             expect(result).toEqual(mockParsedUserSettings);
 
@@ -153,7 +153,9 @@ describe('user', () => {
 
             const result = await esppLotList(mockUserId);
 
-            expect(global.fetch).toHaveBeenCalledWith(`${API_HOST}/user/${mockUserId}/espp-lot`);
+            expect(global.fetch).toHaveBeenCalledWith(`${API_HOST}/user/espp-lot`, {
+                headers: {},
+            });
             expect(result).toEqual(mockESPPLots);
 
             const cachedResult = await esppLotList(mockUserId);

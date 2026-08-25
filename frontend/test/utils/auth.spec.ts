@@ -1,22 +1,10 @@
-import { afterEach, beforeEach, describe, test, expect, vi } from 'vitest';
+import { beforeEach, describe, test, expect, vi } from 'vitest';
 
 import * as auth from '@/utils/auth';
 
 describe('auth', () => {
-    const mockLocation = {
-        href: '',
-        assign: vi.fn(),
-        replace: vi.fn(),
-    };
-
     beforeEach(() => {
-        vi.stubGlobal('location', mockLocation);
-
         vi.resetAllMocks();
-    });
-
-    afterEach(() => {
-        vi.unstubAllGlobals();
     });
 
     describe('getCurrentUser', () => {
@@ -86,16 +74,20 @@ describe('auth', () => {
     });
 
     describe('signOutRedirect', () => {
-        test('should clear user from user manager and redirect to logout URL', async () => {
+        test('should clear user and redirect via RP-initiated logout', async () => {
             const userManager = auth.getUserManager();
-            userManager.removeUser = vi.fn().mockResolvedValue({});
+            userManager.getUser = vi.fn().mockResolvedValue({ id_token: 'id-token-123' });
+            userManager.removeUser = vi.fn().mockResolvedValue(undefined);
+            userManager.signoutRedirect = vi.fn().mockResolvedValue(undefined);
 
             vi.spyOn(auth, 'getUserManager').mockResolvedValue(userManager);
 
             await auth.signOutRedirect();
 
             expect(userManager.removeUser).toHaveBeenCalled();
-            expect(window.location.href).toContain('/logout');
+            expect(userManager.signoutRedirect).toHaveBeenCalledWith(
+                expect.objectContaining({ id_token_hint: 'id-token-123' }),
+            );
         });
     });
 });

@@ -12,7 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 
-	"github.com/ljhurst/fife/pkg/constants"
+	"github.com/ljhurst/fife/pkg/auth"
 	"github.com/ljhurst/fife/pkg/db"
 	"github.com/ljhurst/fife/pkg/models"
 	"github.com/ljhurst/fife/pkg/utils"
@@ -20,11 +20,11 @@ import (
 
 type updateUserSettingsFunc func(svc dynamodbiface.DynamoDBAPI, userID string, settings models.UserSettings) (*models.User, error)
 
-func handlerWithDeps(updateUserSettingsFn updateUserSettingsFunc) func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-		userID := request.PathParameters[constants.PathUserID]
-		if userID == "" {
-			return utils.MissingPathParameterError(constants.PathUserID)
+func handlerWithDeps(updateUserSettingsFn updateUserSettingsFunc) func(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	return func(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+		userID, err := auth.Subject(request)
+		if err != nil {
+			return utils.UnauthorizedError()
 		}
 
 		var userSettings models.UserSettings
@@ -44,7 +44,7 @@ func handlerWithDeps(updateUserSettingsFn updateUserSettingsFunc) func(ctx conte
 	}
 }
 
-func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	handlerWithInjectedDeps := handlerWithDeps(db.UpdateUserSettings)
 	return handlerWithInjectedDeps(ctx, request)
 }

@@ -1,6 +1,7 @@
 import { API_HOST, CACHE_BASE_USER, CACHE_BASE_USER_ESPP_LOT } from '@/api/constants';
 import type { ESPPPurchaseRaw } from '@/domain/espp/espp-purchase-raw';
 import type { Settings, RawUserSettings, UserSettings } from '@/domain/user/user-settings';
+import { authHeader } from '@/utils/auth';
 import { getCachedItem, setCachedItem, getCacheKey } from '@/utils/cache';
 
 async function get(userId: string): Promise<UserSettings> {
@@ -11,7 +12,9 @@ async function get(userId: string): Promise<UserSettings> {
         return parseRawUser(cachedUser);
     }
 
-    const response = await fetch(`${API_HOST}/user/${userId}`);
+    const response = await fetch(`${API_HOST}/user`, {
+        headers: await authHeader(),
+    });
 
     if (response.status === 404) {
         throw new Error(`User not found: ${userId}`);
@@ -27,9 +30,10 @@ async function get(userId: string): Promise<UserSettings> {
 }
 
 async function update(userId: string, userSettings: Settings): Promise<UserSettings> {
-    const response = await fetch(`${API_HOST}/user/${userId}`, {
+    const response = await fetch(`${API_HOST}/user`, {
         method: 'PUT',
         headers: {
+            ...(await authHeader()),
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(userSettings),
@@ -55,7 +59,9 @@ async function esppLotList(userId: string): Promise<ESPPPurchaseRaw[]> {
         return cachedLots;
     }
 
-    const response = await fetch(`${API_HOST}/user/${userId}/espp-lot`);
+    const response = await fetch(`${API_HOST}/user/espp-lot`, {
+        headers: await authHeader(),
+    });
 
     if (!response.ok) {
         throw new Error(`Error fetching ESPP lots: ${response.statusText}`);

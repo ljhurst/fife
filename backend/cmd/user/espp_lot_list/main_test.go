@@ -11,22 +11,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func requestWithSub(sub string) events.APIGatewayV2HTTPRequest {
+	request := events.APIGatewayV2HTTPRequest{}
+	if sub != "" {
+		request.RequestContext.Authorizer = &events.APIGatewayV2HTTPRequestContextAuthorizerDescription{
+			JWT: &events.APIGatewayV2HTTPRequestContextAuthorizerJWTDescription{
+				Claims: map[string]string{"sub": sub},
+			},
+		}
+	}
+	return request
+}
+
 func TestHandler(t *testing.T) {
 	testCases := []struct {
 		name               string
-		request            events.APIGatewayProxyRequest
+		request            events.APIGatewayV2HTTPRequest
 		mockLots           []*models.EsppLot
 		mockError          error
 		expectedStatusCode int
 		expectedBody       string
 	}{
 		{
-			name: "successful retrieval",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"userId": "user123",
-				},
-			},
+			name:    "successful retrieval",
+			request: requestWithSub("user123"),
 			mockLots: []*models.EsppLot{
 				{
 					ID:              "lot123",
@@ -58,38 +66,28 @@ func TestHandler(t *testing.T) {
 			expectedBody:       `[{"id":"lot123","userId":"user123","grantDate":"2023-01-01","purchaseDate":"2023-06-30","offerStartPrice":100,"offerEndPrice":120,"purchasePrice":85,"shares":10,"createdAt":"2023-01-01T00:00:00Z","updatedAt":"2023-01-01T00:00:00Z"},{"id":"lot456","userId":"user123","grantDate":"2023-07-01","purchaseDate":"2023-12-31","offerStartPrice":120,"offerEndPrice":140,"purchasePrice":95,"shares":15,"createdAt":"2023-07-01T00:00:00Z","updatedAt":"2023-07-01T00:00:00Z"}]`,
 		},
 		{
-			name: "no lots found",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"userId": "user456",
-				},
-			},
+			name:               "no lots found",
+			request:            requestWithSub("user456"),
 			mockLots:           []*models.EsppLot{},
 			mockError:          nil,
 			expectedStatusCode: 200,
 			expectedBody:       `[]`,
 		},
 		{
-			name: "database error",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{
-					"userId": "user123",
-				},
-			},
+			name:               "database error",
+			request:            requestWithSub("user123"),
 			mockLots:           nil,
 			mockError:          errors.New("database error"),
 			expectedStatusCode: 500,
 			expectedBody:       `{"error":"Failed to retrieve ESPP lots"}`,
 		},
 		{
-			name: "missing user ID",
-			request: events.APIGatewayProxyRequest{
-				PathParameters: map[string]string{},
-			},
+			name:               "missing subject",
+			request:            requestWithSub(""),
 			mockLots:           nil,
 			mockError:          nil,
-			expectedStatusCode: 400,
-			expectedBody:       `{"error":"Missing path parameter: userId"}`,
+			expectedStatusCode: 401,
+			expectedBody:       `{"error":"Unauthorized"}`,
 		},
 	}
 

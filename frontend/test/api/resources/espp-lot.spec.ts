@@ -54,7 +54,6 @@ describe('espp-lot', () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userId: mockUserId,
                     grantDate: mockESPPLot.grantDate,
                     purchaseDate: mockESPPLot.purchaseDate,
                     offerStartPrice: parseFloat(mockESPPLot.offerStartPrice),
@@ -89,6 +88,7 @@ describe('espp-lot', () => {
 
             expect(global.fetch).toHaveBeenCalledWith(`${API_HOST}/espp/lot/${mockLotId}`, {
                 method: 'DELETE',
+                headers: {},
             });
         });
 
@@ -113,7 +113,9 @@ describe('espp-lot', () => {
 
             const result = await get(mockLotId);
 
-            expect(global.fetch).toHaveBeenCalledWith(`${API_HOST}/espp/lot/${mockLotId}`);
+            expect(global.fetch).toHaveBeenCalledWith(`${API_HOST}/espp/lot/${mockLotId}`, {
+                headers: {},
+            });
             expect(result).toEqual(mockCreatedLot);
         });
 

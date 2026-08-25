@@ -1,15 +1,16 @@
 import { API_HOST, CACHE_BASE_USER_ESPP_LOT } from '@/api/constants';
 import { type ESPPPurchaseInput, type ESPPPurchaseRaw } from '@/domain/espp/espp-purchase-raw';
+import { authHeader } from '@/utils/auth';
 import { deleteCachedItem, getCacheKey } from '@/utils/cache';
 
 async function create(userId: string, lot: ESPPPurchaseInput): Promise<ESPPPurchaseRaw> {
     const response = await fetch(`${API_HOST}/espp/lot`, {
         method: 'POST',
         headers: {
+            ...(await authHeader()),
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            userId,
             grantDate: lot.grantDate,
             purchaseDate: lot.purchaseDate,
             offerStartPrice: parseFloat(lot.offerStartPrice),
@@ -34,6 +35,7 @@ async function create(userId: string, lot: ESPPPurchaseInput): Promise<ESPPPurch
 async function remove(userId: string, lotId: string): Promise<void> {
     const response = await fetch(`${API_HOST}/espp/lot/${lotId}`, {
         method: 'DELETE',
+        headers: await authHeader(),
     });
 
     if (!response.ok) {
@@ -45,7 +47,9 @@ async function remove(userId: string, lotId: string): Promise<void> {
 }
 
 async function get(lotId: string): Promise<ESPPPurchaseRaw> {
-    const response = await fetch(`${API_HOST}/espp/lot/${lotId}`);
+    const response = await fetch(`${API_HOST}/espp/lot/${lotId}`, {
+        headers: await authHeader(),
+    });
 
     if (response.status === 404) {
         throw new Error(`ESPP lot not found: ${lotId}`);

@@ -11,15 +11,23 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 
+	"github.com/ljhurst/fife/pkg/auth"
 	"github.com/ljhurst/fife/pkg/constants"
 	"github.com/ljhurst/fife/pkg/db"
+	"github.com/ljhurst/fife/pkg/models"
 	"github.com/ljhurst/fife/pkg/utils"
 )
 
+type getEsppLotFunc func(svc dynamodbiface.DynamoDBAPI, id string) (*models.EsppLot, error)
 type deleteEsppLotFunc func(svc dynamodbiface.DynamoDBAPI, id string) error
 
-func handlerWithDeps(deleteEsppLotFn deleteEsppLotFunc) func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handlerWithDeps(getEsppLotFn getEsppLotFunc, deleteEsppLotFn deleteEsppLotFunc) func(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	return func(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+		userID, err := auth.Subject(request)
+		if err != nil {
+			return utils.UnauthorizedError()
+		}
+
 		lotID := request.PathParameters[constants.PathLotID]
 		if lotID == "" {
 			return utils.MissingPathParameterError(constants.PathLotID)
@@ -28,8 +36,20 @@ func handlerWithDeps(deleteEsppLotFn deleteEsppLotFunc) func(ctx context.Context
 		sess := session.Must(session.NewSession())
 		svc := dynamodb.New(sess, aws.NewConfig().WithRegion(os.Getenv("AWS_REGION")))
 
-		err := deleteEsppLotFn(svc, lotID)
+		lot, err := getEsppLotFn(svc, lotID)
 		if err != nil {
+			return utils.APIResponse(500, map[string]string{"error": "Failed to delete ESPP lot"})
+		}
+
+		if lot == nil {
+			return utils.APIResponse(404, map[string]string{"error": "ESPP lot not found"})
+		}
+
+		if lot.UserID != userID {
+			return utils.ForbiddenError()
+		}
+
+		if err := deleteEsppLotFn(svc, lotID); err != nil {
 			return utils.APIResponse(500, map[string]string{"error": "Failed to delete ESPP lot"})
 		}
 
@@ -37,8 +57,8 @@ func handlerWithDeps(deleteEsppLotFn deleteEsppLotFunc) func(ctx context.Context
 	}
 }
 
-func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	handlerWithInjectedDeps := handlerWithDeps(db.DeleteEsppLot)
+func handler(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	handlerWithInjectedDeps := handlerWithDeps(db.GetEsppLot, db.DeleteEsppLot)
 	return handlerWithInjectedDeps(ctx, request)
 }
 

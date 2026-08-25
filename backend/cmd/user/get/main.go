@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 
-	"github.com/ljhurst/fife/pkg/constants"
+	"github.com/ljhurst/fife/pkg/auth"
 	"github.com/ljhurst/fife/pkg/db"
 	"github.com/ljhurst/fife/pkg/models"
 	"github.com/ljhurst/fife/pkg/utils"
@@ -19,11 +19,11 @@ import (
 
 type getUserFunc func(svc dynamodbiface.DynamoDBAPI, userID string) (*models.User, error)
 
-func handlerWithDeps(getUserFn getUserFunc) func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-		userID := request.PathParameters[constants.PathUserID]
-		if userID == "" {
-			return utils.MissingPathParameterError(constants.PathUserID)
+func handlerWithDeps(getUserFn getUserFunc) func(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	return func(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+		userID, err := auth.Subject(request)
+		if err != nil {
+			return utils.UnauthorizedError()
 		}
 
 		sess := session.Must(session.NewSession())
@@ -42,7 +42,7 @@ func handlerWithDeps(getUserFn getUserFunc) func(ctx context.Context, request ev
 	}
 }
 
-func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	handlerWithInjectedDeps := handlerWithDeps(db.GetUser)
 	return handlerWithInjectedDeps(ctx, request)
 }
