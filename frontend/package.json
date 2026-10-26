@@ -23,7 +23,7 @@
         "@fortawesome/fontawesome-free": "^6.7.2",
         "@types/alpinejs": "^3.13.11",
         "alpinejs": "^3.14.9",
-        "astro": "^5.7.8",
+        "astro": "^7.4.2",
         "bulma": "^1.0.3",
         "oidc-client-ts": "^3.2.0"
     },
