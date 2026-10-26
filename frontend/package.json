@@ -3,7 +3,7 @@
     "description": "Finance for Everyone",
     "author": "Luke Hurst <hurstlj@umich.edu>",
     "type": "module",
-    "version": "0.16.0",
+    "version": "0.16.1",
     "scripts": {
         "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,astro}\" \"test/**/*.ts\"",
         "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,astro}\" \"test/**/*.ts\"",
@@ -23,7 +23,7 @@
         "@fortawesome/fontawesome-free": "^6.7.2",
         "@types/alpinejs": "^3.13.11",
         "alpinejs": "^3.14.9",
-        "astro": "^5.7.8",
+        "astro": "^5.18.2",
         "bulma": "^1.0.3",
         "oidc-client-ts": "^3.2.0"
     },
