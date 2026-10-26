@@ -16,11 +16,6 @@ output "dynamodb_tables" {
   }
 }
 
-output "cognito_user_pool_endpoint" {
-  description = "Cognito User Pool endpoint"
-  value       = "https://${aws_cognito_user_pool.main.endpoint}"
-}
-
 output "lambda_functions" {
   description = "Lambda function Names"
   value = {

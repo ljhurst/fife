@@ -218,4 +218,4 @@ terraform validate
 - [HTML](https://developer.mozilla.org/en-US/docs/Glossary/HTML5)
 - Styling via [Bulma](https://bulma.io/)
 - Hosted with [AWS CloudFront](https://aws.amazon.com/cloudfront/) on [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html)
-- User auth via [AWS Cognito](https://aws.amazon.com/cognito/)
+- User auth via [Lasso](https://github.com/ljhurst/lasso)
