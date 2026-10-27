@@ -35,6 +35,7 @@ repos:
     rev: v0.11.0.1-1
     hooks:
       - id: shellcheck
+        args: [--external-sources, --source-path=SCRIPTDIR]
 
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.14.1-1
