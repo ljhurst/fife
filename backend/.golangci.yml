@@ -7,6 +7,11 @@ linters:
     # can be done with them once a response or session is finished.
     presets:
       - std-error-handling
+    rules:
+      # The handlers still use aws-sdk-go v1; moving to v2 is a separate change.
+      - linters:
+          - staticcheck
+        text: aws-sdk-go is deprecated
 
 formatters:
   enable:
