@@ -23,18 +23,3 @@ module "site" {
     "form-action 'self'",
   ])
 }
-
-moved {
-  from = aws_s3_bucket.static_site
-  to   = module.site.aws_s3_bucket.this
-}
-
-moved {
-  from = aws_s3_bucket_policy.static_site
-  to   = module.site.aws_s3_bucket_policy.this
-}
-
-moved {
-  from = aws_cloudfront_distribution.static_site
-  to   = module.site.aws_cloudfront_distribution.this
-}
