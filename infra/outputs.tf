@@ -1,11 +1,11 @@
-output "s3_website_url" {
-  description = "S3 website URL"
-  value       = "http://${aws_s3_bucket_website_configuration.static_site.website_endpoint}"
+output "site_url" {
+  description = "Where the frontend is served"
+  value       = "https://${local.site_domain}/"
 }
 
-output "cloudfront_url" {
-  description = "CloudFront distribution URL"
-  value       = "https://${aws_cloudfront_distribution.static_site.domain_name}"
+output "cname_target" {
+  description = "Point a DNS-only CNAME for fife in Cloudflare at this hostname"
+  value       = module.site.cname_target
 }
 
 output "dynamodb_tables" {

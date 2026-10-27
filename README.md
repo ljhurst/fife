@@ -4,7 +4,7 @@ Finance for Everyone
 
 ## Website
 
-<https://d3de9r2gorcf05.cloudfront.net/>
+<https://fife.bylukehurst.com/>
 
 ## Features
 
