@@ -4,7 +4,7 @@ import { ROUTES } from '@/constants';
 import type { CurrentUser } from '@/domain/auth/current-user';
 import { getRuntimeConfig } from '@/utils/runtime';
 
-const AUTHORITY = 'https://zzspanxrc7v4tvou4acvdq36oi0yjdrz.lambda-url.us-east-1.on.aws/';
+const AUTHORITY = 'https://lasso.bylukehurst.com/';
 const CLIENT_ID = 'fife';
 const FIFE_RESOURCE_INDICATOR = 'https://fi37z0j9pg.execute-api.us-east-1.amazonaws.com/prod';
 const AFTER_LOGIN_URL = `${getRuntimeConfig().baseUrl}/${ROUTES.AUTH_AFTER_LOGIN}`;
