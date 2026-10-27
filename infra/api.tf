@@ -1,5 +1,5 @@
 locals {
-  lasso_issuer = "https://zzspanxrc7v4tvou4acvdq36oi0yjdrz.lambda-url.us-east-1.on.aws/"
+  lasso_issuer = "https://lasso.bylukehurst.com/"
 }
 
 # HTTP API
