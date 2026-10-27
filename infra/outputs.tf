@@ -18,27 +18,10 @@ output "dynamodb_tables" {
 
 output "lambda_functions" {
   description = "Lambda function Names"
-  value = {
-    espp_lot_create    = aws_lambda_function.espp_lot_create.function_name
-    espp_lot_delete    = aws_lambda_function.espp_lot_delete.function_name
-    espp_lot_get       = aws_lambda_function.espp_lot_get.function_name
-    user_espp_lot_list = aws_lambda_function.user_espp_lot_list.function_name
-    user_get           = aws_lambda_function.user_get.function_name
-    user_update        = aws_lambda_function.user_update.function_name
-  }
+  value       = { for key, function in aws_lambda_function.this : key => function.function_name }
 }
 
 output "api_gateway_invoke_url" {
   description = "API Gateway invoke URL"
   value       = aws_apigatewayv2_stage.prod.invoke_url
-}
-
-output "github_actions_frontend_deploy_role_arn" {
-  description = "IAM role ARN assumed by GitHub Actions to deploy the frontend"
-  value       = aws_iam_role.github_actions_frontend_deploy.arn
-}
-
-output "github_actions_backend_deploy_role_arn" {
-  description = "IAM role ARN assumed by GitHub Actions to deploy the backend"
-  value       = aws_iam_role.github_actions_backend_deploy.arn
 }

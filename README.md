@@ -77,15 +77,13 @@ npm run preflight
 The API uses Go Lambdas behind and API gateway.
 Each API route has its own `main.go` under `cmd/`.
 Those use shared code under `pkg/` and are compiled into binaries under `bin/`.
-The binaries are uploaded to the lambda functions.
+Terraform deploys the binaries to the lambda functions.
 
-First create the zip files
+Build the zip files into `backend/dist/` (reproducible, so unchanged code produces no Terraform diff):
 
 ```bash
 make lambda-packages
 ```
-
-Then log into the console and upload each zip file to its appropriate Lambda function
 
 ### Developer Experience
 
@@ -152,6 +150,10 @@ See the [check runs](https://github.com/ljhurst/fife/actions/workflows/check.yml
 
 The app is hosted on [AWS S3](https://aws.amazon.com/s3/).
 Deployment is handled by [GitHub Actions](https://github.com/features/actions)
+through the shared workflows in [stych](https://github.com/ljhurst/stych):
+a pull request posts the Terraform plan and a site preview, and merging to
+`main` applies the infrastructure (including the Lambda code) and syncs the
+frontend.
 
 See the workflow steps in `.github/workflows/deploy.yml`
 
@@ -159,23 +161,17 @@ See [deployment runs](https://github.com/ljhurst/fife/actions)
 
 ### AWS Credentials
 
-GitHub Actions authenticates via OIDC (no stored AWS access keys). Each
-workflow assumes a scoped IAM role:
-
-- Frontend deploy: `fife-github-actions-frontend-deploy`
-- Backend deploy: `fife-github-actions-backend-deploy`
-
-The role ARNs are stored as repository variables
-(`AWS_FRONTEND_DEPLOY_ROLE_ARN`, `AWS_BACKEND_DEPLOY_ROLE_ARN`) and read in
-`.github/workflows/deploy.yml`. Both deploy jobs can also be run manually via
-`workflow_dispatch` from the Actions tab.
+GitHub Actions authenticates via OIDC (no stored AWS access keys). The shared
+workflows assume stych's scoped roles: `fife-ci-plan` (read-only, for pull
+requests) and `fife-ci-apply` (for `main`).
 
 For local Terraform access, use IAM Identity Center instead of a static IAM
 user:
 
 ```bash
 aws sso login --profile fife-deploy
-AWS_PROFILE=fife-deploy terraform plan
+make -C backend lambda-packages
+AWS_PROFILE=fife-deploy terraform -chdir=infra plan
 ```
 
 (One-time setup: `aws configure sso` to create the `fife-deploy` profile,
@@ -198,11 +194,7 @@ Review the planned changes:
 terraform plan
 ```
 
-Apply the changes:
-
-```bash
-terraform apply
-```
+CI applies the changes when a pull request merges to `main`; there is no manual apply.
 
 When making changes to the infrastructure be sure to format and validate:
 

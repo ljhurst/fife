@@ -43,5 +43,6 @@ backend/coverage.*
 *.tfstate
 *.tfstate.backup
 *.tfvars
+!infra/terraform.tfvars
 .terraform/
 *.zip

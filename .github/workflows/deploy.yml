@@ -1,98 +1,42 @@
 ---
-name: Deploy Application
+name: Deploy
 
-# yamllint disable rule:truthy
+# yamllint disable-line rule:truthy
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
-  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  deploy-frontend:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    runs-on: ubuntu-latest
-    environment: prod
+  terraform:
     permissions:
       id-token: write
       contents: read
-    defaults:
-      run:
-        working-directory: frontend
+      pull-requests: write
+    uses: ljhurst/stych/.github/workflows/terraform.yml@v1
+    with:
+      plan-role-arn: arn:aws:iam::755958650241:role/stych/fife-ci-plan
+      apply-role-arn: arn:aws:iam::755958650241:role/stych/fife-ci-apply
+      build-command: backend/scripts/build_lambda.sh
+      go-version-file: backend/go.mod
 
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          role-to-assume: ${{ vars.AWS_FRONTEND_DEPLOY_ROLE_ARN }}
-          aws-region: us-east-1
-
-      - name: Deploy to S3
-        run: aws s3 sync ./dist/ s3://lj-fife/ --delete
-
-      - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id E2GDH4UB0IP938 \
-            --paths "/*"
-
-  deploy-backend:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    runs-on: ubuntu-latest
-    environment: prod
+  site:
+    needs: terraform
     permissions:
       id-token: write
       contents: read
-    defaults:
-      run:
-        working-directory: backend
-
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Setup Go
-        uses: actions/setup-go@v7
-        with:
-          go-version: '1.24'
-
-      - name: Install dependencies
-        run: go mod download
-
-      - name: Build
-        run: make lambda-packages
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          role-to-assume: ${{ vars.AWS_BACKEND_DEPLOY_ROLE_ARN }}
-          aws-region: us-east-1
-
-      - name: Deploy to Lambda
-        run: |
-          for zip_file in $(find bin/lambda/arm64 -name "function.zip"); do
-            function_dir=$(dirname "$zip_file")
-
-            parent_dir=$(basename "$(dirname "$function_dir")" | tr '_' '-')
-            function_dir_name=$(basename "$function_dir" | tr '_' '-')
-
-            function_name="fife-${parent_dir}-${function_dir_name}"
-
-            aws lambda update-function-code \
-              --function-name "$function_name" \
-              --zip-file "fileb://$zip_file" \
-              --publish
-          done
+      pull-requests: write
+    uses: ljhurst/stych/.github/workflows/static-site.yml@v1
+    with:
+      plan-role-arn: arn:aws:iam::755958650241:role/stych/fife-ci-plan
+      apply-role-arn: arn:aws:iam::755958650241:role/stych/fife-ci-apply
+      bucket: lj-fife
+      distribution-id: E2GDH4UB0IP938
+      node-version-file: frontend/.nvmrc
+      build-command: >-
+        cd frontend && npm ci && npm run build
+        && mkdir -p ../site && cp -r dist/. ../site/
