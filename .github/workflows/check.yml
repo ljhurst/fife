@@ -17,7 +17,6 @@ jobs:
     with:
       terraform-version: "1.17.0"
       node-version-file: frontend/.nvmrc
-      go-version-file: backend/go.mod
       setup-command: npm ci --prefix frontend
 
   check-frontend:
