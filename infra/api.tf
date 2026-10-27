@@ -37,42 +37,42 @@ resource "aws_apigatewayv2_authorizer" "lasso" {
 resource "aws_apigatewayv2_integration" "espp_lot_create" {
   api_id                 = aws_apigatewayv2_api.main.id
   integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.espp_lot_create.invoke_arn
+  integration_uri        = aws_lambda_function.this["espp_lot_create"].invoke_arn
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "espp_lot_get" {
   api_id                 = aws_apigatewayv2_api.main.id
   integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.espp_lot_get.invoke_arn
+  integration_uri        = aws_lambda_function.this["espp_lot_get"].invoke_arn
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "espp_lot_delete" {
   api_id                 = aws_apigatewayv2_api.main.id
   integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.espp_lot_delete.invoke_arn
+  integration_uri        = aws_lambda_function.this["espp_lot_delete"].invoke_arn
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "user_get" {
   api_id                 = aws_apigatewayv2_api.main.id
   integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.user_get.invoke_arn
+  integration_uri        = aws_lambda_function.this["user_get"].invoke_arn
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "user_update" {
   api_id                 = aws_apigatewayv2_api.main.id
   integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.user_update.invoke_arn
+  integration_uri        = aws_lambda_function.this["user_update"].invoke_arn
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "user_espp_lot_list" {
   api_id                 = aws_apigatewayv2_api.main.id
   integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.user_espp_lot_list.invoke_arn
+  integration_uri        = aws_lambda_function.this["user_espp_lot_list"].invoke_arn
   payload_format_version = "2.0"
 }
 
@@ -129,7 +129,7 @@ resource "aws_apigatewayv2_route" "user_espp_lot_get" {
 resource "aws_lambda_permission" "espp_lot_create" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.espp_lot_create.function_name
+  function_name = aws_lambda_function.this["espp_lot_create"].function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
@@ -137,7 +137,7 @@ resource "aws_lambda_permission" "espp_lot_create" {
 resource "aws_lambda_permission" "espp_lot_get" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.espp_lot_get.function_name
+  function_name = aws_lambda_function.this["espp_lot_get"].function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
@@ -145,7 +145,7 @@ resource "aws_lambda_permission" "espp_lot_get" {
 resource "aws_lambda_permission" "espp_lot_delete" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.espp_lot_delete.function_name
+  function_name = aws_lambda_function.this["espp_lot_delete"].function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
@@ -153,7 +153,7 @@ resource "aws_lambda_permission" "espp_lot_delete" {
 resource "aws_lambda_permission" "user_get" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.user_get.function_name
+  function_name = aws_lambda_function.this["user_get"].function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
@@ -161,7 +161,7 @@ resource "aws_lambda_permission" "user_get" {
 resource "aws_lambda_permission" "user_update" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.user_update.function_name
+  function_name = aws_lambda_function.this["user_update"].function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
@@ -169,7 +169,7 @@ resource "aws_lambda_permission" "user_update" {
 resource "aws_lambda_permission" "user_espp_lot_list" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.user_espp_lot_list.function_name
+  function_name = aws_lambda_function.this["user_espp_lot_list"].function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
