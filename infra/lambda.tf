@@ -22,33 +22,3 @@ resource "aws_lambda_function" "this" {
   timeout          = 3
   memory_size      = 128
 }
-
-moved {
-  from = aws_lambda_function.espp_lot_create
-  to   = aws_lambda_function.this["espp_lot_create"]
-}
-
-moved {
-  from = aws_lambda_function.espp_lot_delete
-  to   = aws_lambda_function.this["espp_lot_delete"]
-}
-
-moved {
-  from = aws_lambda_function.espp_lot_get
-  to   = aws_lambda_function.this["espp_lot_get"]
-}
-
-moved {
-  from = aws_lambda_function.user_espp_lot_list
-  to   = aws_lambda_function.this["user_espp_lot_list"]
-}
-
-moved {
-  from = aws_lambda_function.user_get
-  to   = aws_lambda_function.this["user_get"]
-}
-
-moved {
-  from = aws_lambda_function.user_update
-  to   = aws_lambda_function.this["user_update"]
-}
