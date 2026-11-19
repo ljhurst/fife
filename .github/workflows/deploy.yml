@@ -30,6 +30,7 @@ jobs:
       id-token: write
       contents: read
       pull-requests: write
+      deployments: write
     uses: ljhurst/stych/.github/workflows/static-site.yml@v1
     with:
       plan-role-arn: arn:aws:iam::755958650241:role/stych/fife-ci-plan
