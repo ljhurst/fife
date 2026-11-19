@@ -1,0 +1,20 @@
+---
+name: Preview cleanup
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    permissions:
+      id-token: write
+      contents: read
+      deployments: write
+    uses: ljhurst/stych/.github/workflows/preview-cleanup.yml@v1
+    with:
+      plan-role-arn: arn:aws:iam::755958650241:role/stych/fife-ci-plan
